@@ -45,7 +45,6 @@
   }
   .header p { font-size: 0.75rem; color: var(--grijs); margin-top: 2px; }
 
-  /* LOGIN SCHERM */
   .login-scherm {
     max-width: 360px;
     margin: 60px auto;
@@ -77,7 +76,6 @@
     margin: 20px 0 10px;
   }
 
-  /* BEHEER SCHERM */
   .beheer-scherm { display: none; }
   .beheer-inhoud {
     max-width: 800px;
@@ -85,7 +83,6 @@
     padding: 20px 16px;
   }
 
-  /* TABS */
   .tabs {
     display: flex;
     background: var(--donker2);
@@ -96,13 +93,13 @@
   }
   .tab-btn {
     flex: 1;
-    min-width: 120px;
+    min-width: 100px;
     padding: 12px 8px;
     background: none;
     border: none;
     color: var(--grijs);
     font-family: 'Oswald', sans-serif;
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     letter-spacing: 1px;
     text-transform: uppercase;
     cursor: pointer;
@@ -115,7 +112,6 @@
   .tab-inhoud { display: none; }
   .tab-inhoud.active { display: block; }
 
-  /* FORMULIER */
   .form-group { margin-bottom: 14px; }
   .form-group label {
     display: block;
@@ -142,7 +138,6 @@
   }
   .form-group input[type="password"] { letter-spacing: 2px; }
 
-  /* WEDSTRIJD RIJ */
   .wedstrijd-rij {
     display: grid;
     grid-template-columns: 1fr auto 1fr auto;
@@ -184,7 +179,6 @@
   .opslaan-btn.opgeslagen { background: var(--groen); border-color: var(--groen); color: #fff; }
   .opslaan-btn.bezig { background: #555; cursor: not-allowed; }
 
-  /* DATUM SECTIE */
   .sectie-datum {
     font-size: 0.75rem;
     color: var(--grijs);
@@ -202,7 +196,6 @@
     background: #333;
   }
 
-  /* BONUS RIJEN */
   .bonus-rij {
     padding: 12px 0;
     border-bottom: 1px solid #2a2a2a;
@@ -230,7 +223,59 @@
   }
   .bonus-antwoord-rij input:focus { outline: none; border-color: var(--goud); }
 
-  /* BUTTONS */
+  /* RONDES STIJL */
+  .ronde-sectie {
+    border: 1px solid #3a2a1a;
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 16px;
+    background: #1e140a;
+  }
+  .ronde-titel {
+    font-family: 'Oswald', sans-serif;
+    font-size: 1rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--goud2);
+    margin-bottom: 4px;
+  }
+  .ronde-uitleg {
+    font-size: 0.82rem;
+    color: var(--grijs);
+    margin-bottom: 12px;
+  }
+  .landen-checkboxes {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 8px;
+    margin-top: 8px;
+  }
+  .land-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 10px;
+    background: #111;
+    border: 1px solid #444;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.82rem;
+  }
+  .land-checkbox:hover { border-color: var(--goud); }
+  .land-checkbox.geselecteerd {
+    background: #1a3d2a;
+    border-color: var(--groen2);
+    color: #7de0a0;
+  }
+  .land-checkbox input[type="checkbox"] {
+    width: 16px !important;
+    height: 16px;
+    accent-color: var(--groen2);
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+
   .btn {
     display: block;
     width: 100%;
@@ -255,7 +300,6 @@
   .btn-goud { background: var(--goud); color: var(--donker); }
   .btn-goud:hover { background: #c49010; }
 
-  /* ALERT */
   .alert {
     padding: 12px 16px;
     border-radius: 6px;
@@ -268,7 +312,6 @@
   .alert-error { background: #3d1a1a; border: 1px solid var(--rood); color: #e07d7d; }
   .alert-info { background: #1a2a3d; border: 1px solid #2a5a8a; color: #7db0e0; }
 
-  /* LOADING */
   .loading {
     text-align: center;
     padding: 40px;
@@ -284,7 +327,6 @@
   }
   @keyframes spin { to { transform: rotate(360deg); } }
 
-  /* INFO BOX */
   .info-box {
     background: #111;
     border-left: 3px solid var(--goud);
@@ -297,7 +339,6 @@
   }
   .info-box strong { color: var(--licht); }
 
-  /* PUNTENTELLING SECTIE */
   .punten-uitleg {
     background: #111;
     border: 1px solid #333;
@@ -329,17 +370,18 @@
   @media (max-width: 500px) {
     .wedstrijd-rij { grid-template-columns: 1fr auto 1fr; }
     .opslaan-btn { display: none; }
+    .landen-checkboxes { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); }
   }
 </style>
 </head>
 <body>
 
 <div class="header">
-  <h1>⚙️ Beheerderssscherm</h1>
+  <h1>⚙️ Beheerdersscherm</h1>
   <p>Rembrandt WK Poule 2026 — Alleen voor beheerders</p>
 </div>
 
-<!-- ==================== LOGIN ==================== -->
+<!-- LOGIN -->
 <div class="login-scherm" id="login-scherm">
   <div class="card">
     <h2>🔐 Inloggen</h2>
@@ -353,12 +395,13 @@
   </div>
 </div>
 
-<!-- ==================== BEHEER ==================== -->
+<!-- BEHEER -->
 <div class="beheer-scherm" id="beheer-scherm">
   <div class="beheer-inhoud">
 
     <div class="tabs">
       <button class="tab-btn active" onclick="toonTab('wedstrijden', this)">⚽ Uitslagen</button>
+      <button class="tab-btn" onclick="toonTab('rondes', this)">🏅 Rondes</button>
       <button class="tab-btn" onclick="toonTab('bonus', this)">🎯 Bonusvragen</button>
       <button class="tab-btn" onclick="toonTab('puntentelling', this)">🏆 Puntentelling</button>
     </div>
@@ -375,6 +418,65 @@
         <div id="wedstrijden-container">
           <div class="loading"><div class="spinner"></div>Wedstrijden laden...</div>
         </div>
+      </div>
+    </div>
+
+    <!-- TAB: RONDES -->
+    <div class="tab-inhoud" id="tab-rondes">
+      <div class="card">
+        <h2>🏅 Doorgestroomde landen invoeren</h2>
+        <div class="info-box">
+          Vink aan welke landen er echt zijn doorgegaan naar elke ronde.<br>
+          Klik daarna op <strong>Opslaan</strong> om de selectie op te slaan in Google Sheets.<br>
+          Vergeet niet daarna bij <strong>Puntentelling</strong> te herberekenen!
+        </div>
+        <div id="alert-rondes" class="alert"></div>
+
+        <!-- 16e Finales -->
+        <div class="ronde-sectie">
+          <div class="ronde-titel">🔵 16e Finales</div>
+          <div class="ronde-uitleg">Welke 32 landen zijn doorgegaan uit de groepsfase? (15 pnt per land)</div>
+          <div class="landen-checkboxes" id="check-r16"></div>
+        </div>
+
+        <!-- 8e Finales -->
+        <div class="ronde-sectie">
+          <div class="ronde-titel">🟡 8e Finales</div>
+          <div class="ronde-uitleg">Welke 16 landen zijn doorgegaan? (25 pnt per land)</div>
+          <div class="landen-checkboxes" id="check-r8"></div>
+        </div>
+
+        <!-- Kwartfinales -->
+        <div class="ronde-sectie">
+          <div class="ronde-titel">🟠 Kwartfinales</div>
+          <div class="ronde-uitleg">Welke 8 landen hebben de kwartfinale bereikt? (50 pnt per land)</div>
+          <div class="landen-checkboxes" id="check-kw"></div>
+        </div>
+
+        <!-- Halve Finales -->
+        <div class="ronde-sectie">
+          <div class="ronde-titel">🔴 Halve Finales</div>
+          <div class="ronde-uitleg">Welke 4 landen spelen de halve finale? (100 pnt per land)</div>
+          <div class="landen-checkboxes" id="check-hf"></div>
+        </div>
+
+        <!-- Finale -->
+        <div class="ronde-sectie">
+          <div class="ronde-titel">⭐ Finale</div>
+          <div class="ronde-uitleg">Welke 2 landen spelen de finale? (150 pnt per land)</div>
+          <div class="landen-checkboxes" id="check-fin"></div>
+        </div>
+
+        <!-- Winnaar -->
+        <div class="ronde-sectie">
+          <div class="ronde-titel">🥇 Winnaar</div>
+          <div class="ronde-uitleg">Welk land is wereldkampioen geworden? (200 pnt)</div>
+          <div class="landen-checkboxes" id="check-winnaar"></div>
+        </div>
+
+        <button class="btn btn-groen" id="btn-rondes-opslaan" onclick="slaRondesOp()">
+          💾 Rondes opslaan
+        </button>
       </div>
     </div>
 
@@ -449,15 +551,40 @@
 
 <script>
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbynxPGdnmFNFjGVeX3YzSaa-0N89l03OjUrnIA2HWfNtmou_OdJ9D3Lfrgafn_tV_1d/exec';
-
-// ===================== WACHTWOORD =====================
-// Verander dit wachtwoord naar iets wat jij wilt!
 const WACHTWOORD = 'Rembrandt2026';
 
 let ingelogd = false;
 let wedstrijden = [];
 let bonusvragen = [];
 
+// Alle 48 landen
+const LANDEN = [
+  'ALGERIJE','ARGENTINIË','AUSTRALIË','BELGIË','BOSNIË EN HERZ.',
+  'BRAZILIË','CANADA','COLOMBIA','CONGO','CURAÇAO',
+  'DUITSLAND','ECUADOR','EGYPTE','ENGELAND','FRANKRIJK',
+  'GHANA','HAÏTI','IRAN','IRAK','IVOORKUST',
+  'JAPAN','JORDANIË','KAAPVERDIË','KROATIË','MAROKKO',
+  'MEXICO','NEDERLAND','NIEUW-ZEELAND','NOORWEGEN','OEZBEKISTAN',
+  'OOSTENRIJK','PANAMA','PARAGUAY','PORTUGAL','QATAR',
+  'SAOEDI-ARABIË','SCHOTLAND','SENEGAL','SPANJE','TSJECHIË',
+  'TUNESIË','TURKIJE','URUGUAY','VERENIGDE STATEN','ZWEDEN',
+  'ZWITSERLAND','ZUID-AFRIKA','ZUID-KOREA'
+].sort();
+
+// Rondes configuratie
+const RONDES = [
+  { code: 'r16',     id: 'check-r16',     max: 32 },
+  { code: 'r8',      id: 'check-r8',      max: 16 },
+  { code: 'kw',      id: 'check-kw',      max: 8  },
+  { code: 'hf',      id: 'check-hf',      max: 4  },
+  { code: 'fin',     id: 'check-fin',     max: 2  },
+  { code: 'winnaar', id: 'check-winnaar', max: 1  },
+];
+
+// Huidige rondeselectie (geladen uit Google Sheets)
+let rondeSelectie = {}; // { 'r16': Set(['NEDERLAND', ...]), ... }
+
+// ===================== INLOGGEN =====================
 function inloggen() {
   const ingevoerd = document.getElementById('inp-wachtwoord').value;
   if (ingevoerd === WACHTWOORD) {
@@ -481,6 +608,7 @@ function toonTab(naam, knop) {
 
   if (naam === 'bonus' && bonusvragen.length === 0) laadBonus();
   if (naam === 'puntentelling') laadStats();
+  if (naam === 'rondes') laadRondes();
 }
 
 // ===================== WEDSTRIJDEN =====================
@@ -497,8 +625,6 @@ async function laadWedstrijden() {
 
 function renderWedstrijden() {
   const container = document.getElementById('wedstrijden-container');
-
-  // Groepeer per datum
   const perDatum = {};
   wedstrijden.forEach(w => {
     const datum = w.Datum || w.datum || 'Onbekend';
@@ -520,7 +646,6 @@ function renderWedstrijden() {
       const id     = w.ID || w.id;
       const thuis  = w.Thuis || w.thuis || '';
       const uit    = w.Uit   || w.uit   || '';
-      // Bestaande uitslag tonen als die al is ingevoerd
       const uThuis = w.Uitslag_thuis !== undefined && w.Uitslag_thuis !== '' ? w.Uitslag_thuis : '';
       const uUit   = w.Uitslag_uit   !== undefined && w.Uitslag_uit   !== '' ? w.Uitslag_uit   : '';
       const heeftUitslag = uThuis !== '' && uUit !== '';
@@ -545,14 +670,13 @@ function renderWedstrijden() {
         </div>`;
     });
   });
-
   container.innerHTML = html;
 }
 
 async function slaUitslagOp(id) {
-  const tEl  = document.getElementById('u' + id + '_thuis');
-  const uEl  = document.getElementById('u' + id + '_uit');
-  const btn  = document.getElementById('btn-' + id);
+  const tEl = document.getElementById('u' + id + '_thuis');
+  const uEl = document.getElementById('u' + id + '_uit');
+  const btn = document.getElementById('btn-' + id);
 
   if (tEl.value === '' || uEl.value === '') {
     toonAlert('alert-wedstrijden', '⚠️ Vul beide scores in voor wedstrijd ' + id + '.', 'error');
@@ -579,7 +703,6 @@ async function slaUitslagOp(id) {
       btn.textContent = '✓ Opgeslagen';
       btn.className = 'opslaan-btn opgeslagen';
       btn.disabled = false;
-      // Invoervelden groen kleuren
       tEl.style.borderColor = '#4caf7d';
       tEl.style.background  = '#e8f5ee';
       tEl.style.color       = '#111';
@@ -599,6 +722,123 @@ async function slaUitslagOp(id) {
     btn.className = 'opslaan-btn';
     btn.disabled = false;
   }
+}
+
+// ===================== RONDES =====================
+async function laadRondes() {
+  // Laad bestaande rondedata uit Google Sheets
+  try {
+    const resp = await fetch(SCRIPT_URL + '?action=getRondes');
+    const data = await resp.json();
+
+    // Bouw rondeSelectie op uit de data
+    rondeSelectie = {};
+    if (Array.isArray(data)) {
+      data.forEach(r => {
+        const ronde = (r.Ronde || '').toString().trim().toLowerCase();
+        const land  = (r.Land  || '').toString().trim().toUpperCase();
+        if (ronde && land) {
+          if (!rondeSelectie[ronde]) rondeSelectie[ronde] = new Set();
+          rondeSelectie[ronde].add(land);
+        }
+      });
+    }
+  } catch (e) {
+    // Bij fout: lege selectie, gewoon doorgaan
+    rondeSelectie = {};
+  }
+
+  renderRondes();
+}
+
+function renderRondes() {
+  RONDES.forEach(ronde => {
+    const container = document.getElementById(ronde.id);
+    if (!container) return;
+
+    const geselecteerd = rondeSelectie[ronde.code] || new Set();
+    let html = '';
+
+    LANDEN.forEach(land => {
+      const isGeselecteerd = geselecteerd.has(land);
+      html += `
+        <label class="land-checkbox ${isGeselecteerd ? 'geselecteerd' : ''}"
+          id="label-${ronde.code}-${land.replace(/[^a-zA-Z]/g, '')}">
+          <input type="checkbox"
+            data-ronde="${ronde.code}"
+            data-land="${land}"
+            ${isGeselecteerd ? 'checked' : ''}
+            onchange="toggleLand(this, '${ronde.code}', '${land}', ${ronde.max})">
+          ${land}
+        </label>`;
+    });
+
+    container.innerHTML = html;
+  });
+}
+
+function toggleLand(checkbox, ronde, land, max) {
+  if (!rondeSelectie[ronde]) rondeSelectie[ronde] = new Set();
+
+  const labelId = 'label-' + ronde + '-' + land.replace(/[^a-zA-Z]/g, '');
+  const label = document.getElementById(labelId);
+
+  if (checkbox.checked) {
+    // Check of max bereikt is
+    if (rondeSelectie[ronde].size >= max) {
+      checkbox.checked = false;
+      toonAlert('alert-rondes',
+        `⚠️ Je kunt maximaal ${max} land${max > 1 ? 'en' : ''} selecteren voor deze ronde.`,
+        'error');
+      return;
+    }
+    rondeSelectie[ronde].add(land);
+    if (label) label.classList.add('geselecteerd');
+  } else {
+    rondeSelectie[ronde].delete(land);
+    if (label) label.classList.remove('geselecteerd');
+  }
+
+  verbergAlert('alert-rondes');
+}
+
+async function slaRondesOp() {
+  const btn = document.getElementById('btn-rondes-opslaan');
+  btn.disabled = true;
+  btn.textContent = '⏳ Opslaan...';
+  verbergAlert('alert-rondes');
+
+  // Bouw array van ronde+land combinaties
+  const rondeData = [];
+  RONDES.forEach(ronde => {
+    const landen = rondeSelectie[ronde.code] || new Set();
+    landen.forEach(land => {
+      rondeData.push({ ronde: ronde.code, land: land });
+    });
+  });
+
+  try {
+    const resp = await fetch(SCRIPT_URL, {
+      method: 'POST',
+      body: JSON.stringify({
+        action: 'slaRondesOp',
+        rondes: rondeData,
+      }),
+    });
+    const result = await resp.json();
+
+    if (result.success) {
+      toonAlert('alert-rondes',
+        '✅ Rondes opgeslagen! Vergeet niet de puntentelling te herberekenen.', 'success');
+    } else {
+      toonAlert('alert-rondes', '❌ Fout: ' + (result.error || 'Onbekende fout'), 'error');
+    }
+  } catch (e) {
+    toonAlert('alert-rondes', '❌ Verbindingsfout. Probeer opnieuw.', 'error');
+  }
+
+  btn.disabled = false;
+  btn.textContent = '💾 Rondes opslaan';
 }
 
 // ===================== BONUS =====================
