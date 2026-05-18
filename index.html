@@ -1,0 +1,1072 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rembrandt WK Poule 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --rood: #8B1A1A;
+    --rood2: #C8102E;
+    --goud: #D4A017;
+    --goud2: #F5C518;
+    --bruin: #6B3A2A;
+    --donker: #1a1208;
+    --donker2: #241a0e;
+    --licht: #f5efd8;
+    --wit: #ffffff;
+    --grijs: #9a8e7a;
+    --groen: #2d8a4e;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Source Sans 3', sans-serif;
+    background: var(--donker);
+    color: var(--licht);
+    min-height: 100vh;
+  }
+
+  /* HEADER */
+  .header {
+    background: var(--donker2);
+    border-bottom: 3px solid var(--bruin);
+    padding: 12px 20px;
+    text-align: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .header-logo {
+    height: 64px;
+    width: auto;
+    display: block;
+    margin: 0 auto 6px;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
+  }
+  .header h1 {
+    font-family: 'Oswald', sans-serif;
+    font-size: 1.3rem;
+    color: var(--goud);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+  }
+  .header p { font-size: 0.75rem; color: var(--grijs); margin-top: 2px; }
+
+  /* NAV TABS */
+  .nav {
+    display: flex;
+    background: var(--donker2);
+    border-bottom: 1px solid #333;
+    overflow-x: auto;
+  }
+  .nav button {
+    flex: 1;
+    min-width: 80px;
+    padding: 12px 8px;
+    background: none;
+    border: none;
+    color: var(--grijs);
+    font-family: 'Oswald', sans-serif;
+    font-size: 0.85rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition: all 0.2s;
+  }
+  .nav button.active {
+    color: var(--goud2);
+    border-bottom-color: var(--goud2);
+  }
+  .nav button:hover { color: var(--licht); }
+
+  /* PAGES */
+  .page { display: none; padding: 20px 16px; max-width: 700px; margin: 0 auto; }
+  .page.active { display: block; }
+
+  /* CARDS */
+  .card {
+    background: var(--donker2);
+    border: 1px solid #333;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 16px;
+  }
+  .card h2 {
+    font-family: 'Oswald', sans-serif;
+    color: var(--goud);
+    font-size: 1.1rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #333;
+  }
+  .card h3 {
+    font-family: 'Oswald', sans-serif;
+    color: var(--licht);
+    font-size: 0.95rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin: 16px 0 8px;
+  }
+
+  /* FORMS */
+  .form-group { margin-bottom: 14px; }
+  .form-group label {
+    display: block;
+    font-size: 0.8rem;
+    color: var(--grijs);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+  }
+  .form-group input, .form-group select {
+    width: 100%;
+    background: #111;
+    border: 1px solid #444;
+    border-radius: 6px;
+    color: var(--licht);
+    padding: 10px 12px;
+    font-size: 1rem;
+    font-family: 'Source Sans 3', sans-serif;
+    transition: border-color 0.2s;
+  }
+  .form-group input:focus, .form-group select:focus {
+    outline: none;
+    border-color: var(--goud);
+  }
+  .form-group input::placeholder { color: #555; }
+
+  /* WEDSTRIJD ROW */
+  .wedstrijd-row {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 0;
+    border-bottom: 1px solid #2a2a2a;
+  }
+  .wedstrijd-row:last-child { border-bottom: none; }
+  .team-thuis { text-align: right; font-size: 0.9rem; font-weight: 600; }
+  .team-uit { text-align: left; font-size: 0.9rem; font-weight: 600; }
+  .team-thuis.nl, .team-uit.nl { color: var(--goud); }
+  .score-input {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    justify-content: center;
+  }
+  .score-input input {
+    width: 36px !important;
+    text-align: center;
+    padding: 6px 4px !important;
+    font-size: 1rem !important;
+    font-weight: 700;
+  }
+  .score-input span { color: var(--grijs); font-weight: 700; }
+
+  /* RONDE GRID */
+  .landen-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-top: 8px;
+  }
+  .landen-grid input {
+    background: #111;
+    border: 1px solid #444;
+    border-radius: 6px;
+    color: var(--licht);
+    padding: 8px 10px;
+    font-size: 0.9rem;
+    font-family: 'Source Sans 3', sans-serif;
+    width: 100%;
+  }
+  .landen-grid input:focus {
+    outline: none;
+    border-color: var(--goud);
+  }
+
+  /* BUTTONS */
+  .btn {
+    display: block;
+    width: 100%;
+    padding: 14px;
+    background: var(--rood2);
+    color: var(--wit);
+    border: none;
+    border-radius: 8px;
+    font-family: 'Oswald', sans-serif;
+    font-size: 1.1rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+    margin-top: 16px;
+  }
+  .btn:hover { background: var(--rood); }
+  .btn:active { transform: scale(0.98); }
+  .btn:disabled { background: #444; cursor: not-allowed; }
+  .btn-gold {
+    background: var(--goud);
+    color: var(--donker);
+  }
+  .btn-gold:hover { background: #d4a800; }
+  .btn-small {
+    display: inline-block;
+    width: auto;
+    padding: 8px 16px;
+    font-size: 0.85rem;
+    margin-top: 8px;
+  }
+
+  /* ALERT */
+  .alert {
+    padding: 12px 16px;
+    border-radius: 6px;
+    margin-bottom: 14px;
+    font-size: 0.9rem;
+    display: none;
+  }
+  .alert.show { display: block; }
+  .alert-success { background: #1a3d2a; border: 1px solid var(--groen); color: #7de0a0; }
+  .alert-error { background: #3d1a1a; border: 1px solid var(--rood); color: #e07d7d; }
+  .alert-info { background: #1a2a3d; border: 1px solid #2a5a8a; color: #7db0e0; }
+
+  /* RANGLIJST */
+  .rang-table { width: 100%; border-collapse: collapse; }
+  .rang-table th {
+    font-family: 'Oswald', sans-serif;
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--grijs);
+    padding: 8px 6px;
+    text-align: left;
+    border-bottom: 1px solid #333;
+  }
+  .rang-table td {
+    padding: 10px 6px;
+    font-size: 0.9rem;
+    border-bottom: 1px solid #222;
+  }
+  .rang-table tr:hover td { background: #2a2a2a; }
+  .rang-1 td { color: var(--goud); font-weight: 700; }
+  .rang-2 td { color: #C0C0C0; }
+  .rang-3 td { color: #CD7F32; }
+  .rang-nr {
+    font-family: 'Oswald', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    width: 30px;
+  }
+  .punten-badge {
+    background: var(--rood);
+    color: var(--wit);
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-family: 'Oswald', sans-serif;
+    font-size: 0.85rem;
+  }
+
+  /* LOADING */
+  .loading {
+    text-align: center;
+    padding: 40px;
+    color: var(--grijs);
+  }
+  .spinner {
+    width: 32px; height: 32px;
+    border: 3px solid #333;
+    border-top-color: var(--goud);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin: 0 auto 12px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* STAP INDICATOR */
+  .stap-indicator {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    gap: 0;
+  }
+  .stap {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.75rem;
+    color: var(--grijs);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .stap-nr {
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    background: #333;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Oswald', sans-serif;
+    font-size: 0.8rem;
+    flex-shrink: 0;
+  }
+  .stap.active .stap-nr { background: var(--goud); color: var(--donker); }
+  .stap.done .stap-nr { background: var(--groen); color: var(--wit); }
+  .stap.active { color: var(--licht); }
+  .stap-lijn { flex: 1; height: 1px; background: #333; margin: 0 6px; }
+
+  /* SECTIE HEADER */
+  .sectie-datum {
+    font-size: 0.75rem;
+    color: var(--grijs);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin: 20px 0 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .sectie-datum::before, .sectie-datum::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: #333;
+  }
+
+  /* BONUS */
+  .bonus-item {
+    padding: 10px 0;
+    border-bottom: 1px solid #2a2a2a;
+  }
+  .bonus-item:last-child { border-bottom: none; }
+  .bonus-vraag {
+    font-size: 0.85rem;
+    color: var(--grijs);
+    margin-bottom: 6px;
+  }
+  .bonus-item input {
+    width: 100%;
+    background: #111;
+    border: 1px solid #444;
+    border-radius: 6px;
+    color: var(--licht);
+    padding: 8px 12px;
+    font-size: 0.95rem;
+    font-family: 'Source Sans 3', sans-serif;
+  }
+  .bonus-item input:focus { outline: none; border-color: var(--goud); }
+
+  /* PROGRESS */
+  .progress-bar {
+    height: 4px;
+    background: #333;
+    border-radius: 2px;
+    margin: 8px 0 16px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: var(--goud);
+    border-radius: 2px;
+    transition: width 0.3s;
+  }
+  .progress-text {
+    font-size: 0.75rem;
+    color: var(--grijs);
+    text-align: right;
+    margin-top: -14px;
+    margin-bottom: 16px;
+  }
+
+  /* PUNTEN BADGE in ranglijst */
+  .sub-punten {
+    font-size: 0.75rem;
+    color: var(--grijs);
+  }
+
+  /* INFO BOX */
+  .info-box {
+    background: #111;
+    border-left: 3px solid var(--goud);
+    padding: 12px 16px;
+    border-radius: 0 6px 6px 0;
+    margin-bottom: 16px;
+    font-size: 0.85rem;
+    color: var(--grijs);
+    line-height: 1.6;
+  }
+  .info-box strong { color: var(--licht); }
+
+  /* WACHT SCHERM */
+  .wacht-scherm {
+    text-align: center;
+    padding: 40px 20px;
+  }
+  .wacht-scherm .groot-getal {
+    font-family: 'Oswald', sans-serif;
+    font-size: 4rem;
+    color: var(--goud);
+    line-height: 1;
+  }
+  .wacht-scherm p { color: var(--grijs); margin-top: 8px; }
+
+  /* RESPONSIVE */
+  @media (max-width: 400px) {
+    .team-thuis, .team-uit { font-size: 0.75rem; }
+    .landen-grid { grid-template-columns: 1fr; }
+  }
+
+  /* SMOOTH SCROLL */
+  html { scroll-behavior: smooth; }
+
+  /* STAP PAGINA */
+  .stap-pagina { display: none; }
+  .stap-pagina.active { display: block; }
+
+  /* RONDE SECTIES */
+  .ronde-sectie {
+    border: 1px solid #3a2a1a;
+    border-radius: 8px;
+    padding: 14px;
+    margin: 12px 0;
+    background: #1e140a;
+  }
+  .ronde-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  .ronde-icon { font-size: 1.4rem; flex-shrink: 0; margin-top: 2px; }
+  .ronde-titel {
+    font-family: 'Oswald', sans-serif;
+    font-size: 1rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--goud2);
+    margin-bottom: 4px;
+  }
+  .ronde-uitleg {
+    font-size: 0.82rem;
+    color: var(--grijs);
+    line-height: 1.5;
+  }
+  .ronde-uitleg strong { color: var(--licht); }
+  .pnt-badge {
+    display: inline-block;
+    background: var(--rood);
+    color: var(--wit);
+    padding: 1px 7px;
+    border-radius: 10px;
+    font-size: 0.75rem;
+    font-family: 'Oswald', sans-serif;
+    letter-spacing: 0.5px;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <img src="images/logo/logo.png" alt="Rembrandt Pub" class="header-logo" onerror="this.style.display='none'">
+  <h1>WK POULE 2026</h1>
+  <p>Vul je voorspellingen in voor het WK!</p>
+</div>
+
+<nav class="nav">
+  <button class="active" onclick="toonPagina('invullen')">Meedoen</button>
+  <button onclick="toonPagina('ranglijst')">Ranglijst</button>
+  <button onclick="toonPagina('regels')">Regels</button>
+</nav>
+
+<!-- ==================== PAGINA: INVULLEN ==================== -->
+<div class="page active" id="pagina-invullen">
+
+  <!-- STAP INDICATOR -->
+  <div style="padding: 16px 16px 0; max-width: 700px; margin: 0 auto;">
+    <div class="stap-indicator">
+      <div class="stap active" id="stap-ind-1">
+        <div class="stap-nr">1</div>
+        <span>Gegevens</span>
+      </div>
+      <div class="stap-lijn"></div>
+      <div class="stap" id="stap-ind-2">
+        <div class="stap-nr">2</div>
+        <span>Wedstrijden</span>
+      </div>
+      <div class="stap-lijn"></div>
+      <div class="stap" id="stap-ind-3">
+        <div class="stap-nr">3</div>
+        <span>Rondes</span>
+      </div>
+      <div class="stap-lijn"></div>
+      <div class="stap" id="stap-ind-4">
+        <div class="stap-nr">4</div>
+        <span>Bonus</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="page active" id="pagina-invullen" style="padding-top: 8px;">
+
+  <!-- STAP 1: GEGEVENS -->
+  <div class="stap-pagina active" id="stap1">
+    <div class="card">
+      <h2>👤 Jouw gegevens</h2>
+      <div class="info-box">
+        Deelnemen kost <strong>€ 25,-</strong>. Prijzen: <strong>1e 60%</strong> · <strong>2e 30%</strong> · <strong>3e 10%</strong> van de pot.<br>
+        Inleveren uiterlijk <strong>dinsdag 9 juni</strong>!
+      </div>
+      <div id="alert-gegevens" class="alert"></div>
+      <div class="form-group">
+        <label>Naam *</label>
+        <input type="text" id="inp-naam" placeholder="Jouw naam" autocomplete="name">
+      </div>
+      <div class="form-group">
+        <label>Telefoonnummer</label>
+        <input type="tel" id="inp-telefoon" placeholder="06-12345678" autocomplete="tel">
+      </div>
+      <div class="form-group">
+        <label>E-mailadres</label>
+        <input type="email" id="inp-email" placeholder="naam@email.nl" autocomplete="email">
+      </div>
+      <button class="btn" onclick="naarStap2()">Volgende: Wedstrijden →</button>
+    </div>
+  </div>
+
+  <!-- STAP 2: WEDSTRIJDEN -->
+  <div class="stap-pagina" id="stap2">
+    <div class="card">
+      <h2>⚽ Wedstrijduitslagen</h2>
+      <div class="info-box">
+        Juiste toto (thuis/gelijk/uit): <strong>5 punten</strong><br>
+        Juiste uitslag: <strong>10 punten</strong>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" id="voortgang-bar" style="width:0%"></div></div>
+      <div class="progress-text" id="voortgang-tekst">0 van 72 ingevuld</div>
+      <div id="alert-wedstrijden" class="alert"></div>
+      <div id="wedstrijden-container">
+        <div class="loading"><div class="spinner"></div>Wedstrijden laden...</div>
+      </div>
+      <div style="display:flex; gap:8px; margin-top:16px;">
+        <button class="btn" style="background:#333; flex:1" onclick="naarStap(1)">← Terug</button>
+        <button class="btn" style="flex:2" onclick="naarStap3()">Volgende: Rondes →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- STAP 3: RONDES -->
+  <div class="stap-pagina" id="stap3">
+    <div class="card">
+      <h2>🏆 Doorgestroomde landen</h2>
+      <div class="info-box">
+        Welke landen komen er door naar elke ronde van het toernooi?<br>
+        Kies per ronde de landen die jij verwacht. Hoe verder een land komt dat jij goed voorspeld hebt, hoe meer punten!
+      </div>
+      <div id="alert-rondes" class="alert"></div>
+
+      <div class="ronde-sectie">
+        <div class="ronde-header">
+          <span class="ronde-icon">🔵</span>
+          <div>
+            <div class="ronde-titel">16e Finales</div>
+            <div class="ronde-uitleg">Welke <strong>32 landen</strong> komen door uit de groepsfase? Kies hieronder 32 landen. <span class="pnt-badge">15 pnt per land</span></div>
+          </div>
+        </div>
+        <div class="landen-grid" id="r16-grid"></div>
+      </div>
+
+      <div class="ronde-sectie">
+        <div class="ronde-header">
+          <span class="ronde-icon">🟡</span>
+          <div>
+            <div class="ronde-titel">8e Finales</div>
+            <div class="ronde-uitleg">Welke <strong>16 landen</strong> winnen de 16e finale en gaan door? <span class="pnt-badge">25 pnt per land</span></div>
+          </div>
+        </div>
+        <div class="landen-grid" id="r8-grid"></div>
+      </div>
+
+      <div class="ronde-sectie">
+        <div class="ronde-header">
+          <span class="ronde-icon">🟠</span>
+          <div>
+            <div class="ronde-titel">Kwartfinales</div>
+            <div class="ronde-uitleg">Welke <strong>8 landen</strong> bereiken de kwartfinale? <span class="pnt-badge">50 pnt per land</span></div>
+          </div>
+        </div>
+        <div class="landen-grid" id="kw-grid"></div>
+      </div>
+
+      <div class="ronde-sectie">
+        <div class="ronde-header">
+          <span class="ronde-icon">🔴</span>
+          <div>
+            <div class="ronde-titel">Halve Finales</div>
+            <div class="ronde-uitleg">Welke <strong>4 landen</strong> spelen de halve finale? <span class="pnt-badge">100 pnt per land</span></div>
+          </div>
+        </div>
+        <div class="landen-grid" id="hf-grid"></div>
+      </div>
+
+      <div class="ronde-sectie">
+        <div class="ronde-header">
+          <span class="ronde-icon">⭐</span>
+          <div>
+            <div class="ronde-titel">Finale</div>
+            <div class="ronde-uitleg">Welke <strong>2 landen</strong> spelen de finale? <span class="pnt-badge">150 pnt per land</span></div>
+          </div>
+        </div>
+        <div class="landen-grid" id="fin-grid"></div>
+      </div>
+
+      <div class="ronde-sectie">
+        <div class="ronde-header">
+          <span class="ronde-icon">🥇</span>
+          <div>
+            <div class="ronde-titel">Wereldkampioen</div>
+            <div class="ronde-uitleg">Welk land wordt <strong>wereldkampioen</strong>? <span class="pnt-badge">200 pnt</span></div>
+          </div>
+        </div>
+        <div class="landen-grid" id="win-grid"></div>
+      </div>
+
+      <div style="display:flex; gap:8px; margin-top:16px;">
+        <button class="btn" style="background:#333; flex:1" onclick="naarStap(2)">← Terug</button>
+        <button class="btn" style="flex:2" onclick="naarStap4()">Volgende: Bonusvragen →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- STAP 4: BONUS -->
+  <div class="stap-pagina" id="stap4">
+    <div class="card">
+      <h2>🎯 Bonusvragen</h2>
+      <div class="info-box">
+        Per goed antwoord: <strong>35 punten</strong>
+      </div>
+      <div id="alert-bonus" class="alert"></div>
+      <div id="bonus-container">
+        <div class="loading"><div class="spinner"></div>Laden...</div>
+      </div>
+      <div style="display:flex; gap:8px; margin-top:16px;">
+        <button class="btn" style="background:#333; flex:1" onclick="naarStap(3)">← Terug</button>
+        <button class="btn btn-gold" style="flex:2" onclick="verstuurVoorspelling()">✅ Inzenden!</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- STAP 5: KLAAR -->
+  <div class="stap-pagina" id="stap5">
+    <div class="card">
+      <div class="wacht-scherm">
+        <div style="font-size: 3rem; margin-bottom: 12px;">🎉</div>
+        <div class="groot-getal" id="klaar-naam">Super!</div>
+        <p style="margin-top: 12px; color: var(--licht);">Je voorspelling is opgeslagen!</p>
+        <p style="margin-top: 8px;">Vergeet niet <strong style="color:var(--goud)">€ 25,-</strong> te betalen aan de Rembrandt Pub.</p>
+        <p style="margin-top: 16px; font-size: 0.85rem; color: var(--grijs);">Kijk via de Ranglijst hoe je het doet zodra wedstrijden gespeeld zijn.</p>
+        <button class="btn btn-gold" style="margin-top: 24px; max-width: 200px; margin-left:auto; margin-right:auto;" onclick="toonPagina('ranglijst')">Bekijk ranglijst</button>
+      </div>
+    </div>
+  </div>
+
+  </div>
+</div>
+
+<!-- ==================== PAGINA: RANGLIJST ==================== -->
+<div class="page" id="pagina-ranglijst">
+  <div class="card">
+    <h2>🏆 Ranglijst</h2>
+    <div id="ranglijst-container">
+      <div class="loading"><div class="spinner"></div>Ranglijst laden...</div>
+    </div>
+    <button class="btn btn-small" style="background:#333; width:auto; margin-top:12px;" onclick="laadRanglijst()">↻ Vernieuwen</button>
+  </div>
+</div>
+
+<!-- ==================== PAGINA: REGELS ==================== -->
+<div class="page" id="pagina-regels">
+  <div class="card">
+    <h2>📋 Regels & Puntentelling</h2>
+    <div class="info-box" style="margin-bottom: 12px;">
+      <strong>Deelnamekosten: € 25,-</strong><br>
+      Inleveren uiterlijk dinsdag 9 juni 2026
+    </div>
+    <h3>Wedstrijdpunten</h3>
+    <div class="info-box">
+      Juiste toto (thuis/gelijk/uit): <strong>5 punten</strong><br>
+      Juiste uitslag: <strong>10 punten</strong>
+    </div>
+    <h3>Doorgestroomde landen</h3>
+    <div class="info-box">
+      16e finales (32 landen): <strong>15 punten</strong> per land<br>
+      8e finales (16 landen): <strong>25 punten</strong> per land<br>
+      Kwartfinales (8 landen): <strong>50 punten</strong> per land<br>
+      Halve finales (4 landen): <strong>100 punten</strong> per land<br>
+      Finale (2 landen): <strong>150 punten</strong> per land<br>
+      Winnaar: <strong>200 punten</strong>
+    </div>
+    <h3>Bonusvragen</h3>
+    <div class="info-box">
+      Per goed antwoord: <strong>35 punten</strong>
+    </div>
+    <h3>Prijzen</h3>
+    <div class="info-box">
+      🥇 1e plaats: <strong>60%</strong> van de pot<br>
+      🥈 2e plaats: <strong>30%</strong> van de pot<br>
+      🥉 3e plaats: <strong>10%</strong> van de pot
+    </div>
+  </div>
+</div>
+
+<script>
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbynxPGdnmFNFjGVeX3YzSaa-0N89l03OjUrnIA2HWfNtmou_OdJ9D3Lfrgafn_tV_1d/exec';
+
+let wedstrijden = [];
+let bonusvragen = [];
+let huidigeStap = 1;
+
+// ===================== NAVIGATIE =====================
+function toonPagina(naam) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
+  document.getElementById('pagina-' + naam).classList.add('active');
+  event.target.classList.add('active');
+
+  if (naam === 'ranglijst') laadRanglijst();
+  window.scrollTo(0, 0);
+}
+
+function naarStap(nr) {
+  document.querySelectorAll('.stap-pagina').forEach(s => s.classList.remove('active'));
+  document.getElementById('stap' + nr).classList.add('active');
+  huidigeStap = nr;
+  updateStapIndicator(nr);
+  window.scrollTo(0, 0);
+}
+
+function updateStapIndicator(actief) {
+  for (let i = 1; i <= 4; i++) {
+    const el = document.getElementById('stap-ind-' + i);
+    if (!el) continue;
+    el.classList.remove('active', 'done');
+    if (i < actief) el.classList.add('done');
+    else if (i === actief) el.classList.add('active');
+  }
+}
+
+// ===================== STAP 1 → 2 =====================
+async function naarStap2() {
+  const naam = document.getElementById('inp-naam').value.trim();
+  if (!naam) {
+    toonAlert('alert-gegevens', 'Vul je naam in!', 'error');
+    return;
+  }
+  verbergAlert('alert-gegevens');
+  naarStap(2);
+  if (wedstrijden.length === 0) await laadWedstrijden();
+}
+
+// ===================== WEDSTRIJDEN LADEN =====================
+async function laadWedstrijden() {
+  try {
+    const resp = await fetch(SCRIPT_URL + '?action=getWedstrijden');
+    wedstrijden = await resp.json();
+    renderWedstrijden();
+  } catch (e) {
+    document.getElementById('wedstrijden-container').innerHTML =
+      '<div class="alert alert-error show">Fout bij laden. Controleer je verbinding.</div>';
+  }
+}
+
+function renderWedstrijden() {
+  const container = document.getElementById('wedstrijden-container');
+  
+  // Groepeer per datum
+  const perDatum = {};
+  wedstrijden.forEach(w => {
+    // Ondersteuning voor hoofdletters én kleine letters
+    const datum = w.Datum || w.datum || 'Onbekend';
+    // Datum netjes weergeven
+    let datumLabel = datum;
+    if (datum && datum !== 'Onbekend') {
+      try {
+        const d = new Date(datum);
+        datumLabel = d.toLocaleDateString('nl-NL', { weekday: 'long', day: 'numeric', month: 'long' });
+      } catch(e) { datumLabel = datum; }
+    }
+    if (!perDatum[datumLabel]) perDatum[datumLabel] = [];
+    perDatum[datumLabel].push(w);
+  });
+
+  let html = '';
+  Object.entries(perDatum).forEach(([datum, lijst]) => {
+    html += `<div class="sectie-datum">${datum}</div>`;
+    lijst.forEach(w => {
+      const thuis = w.Thuis || w.thuis || '';
+      const uit = w.Uit || w.uit || '';
+      const id = w.ID || w.id;
+      const nlThuis = thuis === 'NEDERLAND';
+      const nlUit = uit === 'NEDERLAND';
+      html += `
+        <div class="wedstrijd-row">
+          <div class="team-thuis ${nlThuis ? 'nl' : ''}">${thuis}</div>
+          <div class="score-input">
+            <input type="number" min="0" max="20" id="w${id}_thuis"
+              placeholder="0" oninput="updateVoortgang()">
+            <span>-</span>
+            <input type="number" min="0" max="20" id="w${id}_uit"
+              placeholder="0" oninput="updateVoortgang()">
+          </div>
+          <div class="team-uit ${nlUit ? 'nl' : ''}">${uit}</div>
+        </div>`;
+    });
+  });
+  container.innerHTML = html;
+}
+
+function updateVoortgang() {
+  let ingevuld = 0;
+  wedstrijden.forEach(w => {
+    const id = w.ID || w.id;
+    const t = document.getElementById('w' + id + '_thuis');
+    const u = document.getElementById('w' + id + '_uit');
+    if (t && u && t.value !== '' && u.value !== '') ingevuld++;
+  });
+  const pct = Math.round((ingevuld / wedstrijden.length) * 100);
+  document.getElementById('voortgang-bar').style.width = pct + '%';
+  document.getElementById('voortgang-tekst').textContent = ingevuld + ' van ' + wedstrijden.length + ' ingevuld';
+}
+
+// ===================== STAP 2 → 3 =====================
+function naarStap3() {
+  naarStap(3);
+  renderRondes();
+}
+
+const LANDEN = [
+  'ALGERIJE','ARGENTINIË','AUSTRALIË','BELGIË','BOSNIË EN HERZ.',
+  'BRAZILIË','CANADA','COLOMBIA','CONGO','CURAÇAO',
+  'DUITSLAND','ECUADOR','EGYPTE','ENGELAND','FRANKRIJK',
+  'GHANA','HAÏTI','IRAN','IRAK','IVOORKUST',
+  'JAPAN','JORDANIË','KAAPVERDIË','KROATIË','MAROKKO',
+  'MEXICO','NEDERLAND','NIEUW-ZEELAND','NOORWEGEN','OEZBEKISTAN',
+  'OOSTENRIJK','PANAMA','PARAGUAY','PORTUGAL','QATAR',
+  'SAOEDI-ARABIË','SCHOTLAND','SENEGAL','SPANJE','TSJECHIË',
+  'TUNESIË','TURKIJE','URUGUAY','VERENIGDE STATEN','ZWEDEN',
+  'ZWITSERLAND','ZUID-AFRIKA','ZUID-KOREA'
+].sort();
+
+function maakDropdown(id, placeholder) {
+  let html = `<select id="${id}" style="width:100%;background:#111;border:1px solid #444;border-radius:6px;color:var(--licht);padding:8px 10px;font-size:0.85rem;font-family:'Source Sans 3',sans-serif;">`;
+  html += `<option value="">— ${placeholder} —</option>`;
+  LANDEN.forEach(l => { html += `<option value="${l}">${l}</option>`; });
+  html += '</select>';
+  return html;
+}
+
+function renderRondes() {
+  const configs = [
+    { id: 'r16-grid', prefix: 'r16_', count: 32, label: 'Kies land' },
+    { id: 'r8-grid',  prefix: 'r8_',  count: 16, label: 'Kies land' },
+    { id: 'kw-grid',  prefix: 'kw',   count: 8,  label: 'Kies land' },
+    { id: 'hf-grid',  prefix: 'hf',   count: 4,  label: 'Kies land' },
+    { id: 'fin-grid', prefix: 'fin',  count: 2,  label: 'Kies finalist' },
+  ];
+  configs.forEach(c => {
+    const grid = document.getElementById(c.id);
+    if (!grid) return;
+    let html = '';
+    for (let i = 1; i <= c.count; i++) {
+      html += maakDropdown(c.prefix + i, c.label);
+    }
+    grid.innerHTML = html;
+  });
+  // Winnaar apart (1 kolom, volle breedte)
+  const winGrid = document.getElementById('win-grid');
+  if (winGrid) {
+    winGrid.style.gridTemplateColumns = '1fr';
+    winGrid.innerHTML = maakDropdown('winnaar', 'Kies de winnaar');
+  }
+}
+
+// ===================== STAP 3 → 4 =====================
+async function naarStap4() {
+  naarStap(4);
+  if (bonusvragen.length === 0) await laadBonusvragen();
+}
+
+async function laadBonusvragen() {
+  try {
+    const resp = await fetch(SCRIPT_URL + '?action=getBonusvragen');
+    bonusvragen = await resp.json();
+    renderBonus();
+  } catch (e) {
+    document.getElementById('bonus-container').innerHTML =
+      '<div class="alert alert-error show">Fout bij laden.</div>';
+  }
+}
+
+function renderBonus() {
+  const container = document.getElementById('bonus-container');
+  let html = '';
+  bonusvragen.forEach((v, i) => {
+    const id  = v.ID   || v.id   || (i + 1);
+    const vraag = v.Vraag || v.vraag || v.VRAAG || '';
+    html += `
+      <div class="bonus-item">
+        <div class="bonus-vraag">Vraag ${id}: ${vraag}</div>
+        <input type="text" id="b${id}" placeholder="Jouw antwoord...">
+      </div>`;
+  });
+  container.innerHTML = html;
+}
+
+// ===================== VERSTUUR =====================
+async function verstuurVoorspelling() {
+  const btn = event.target;
+  btn.disabled = true;
+  btn.textContent = 'Bezig met opslaan...';
+
+  const data = {
+    action: 'submitVoorspelling',
+    naam: document.getElementById('inp-naam').value.trim(),
+    telefoon: document.getElementById('inp-telefoon').value.trim(),
+    email: document.getElementById('inp-email').value.trim(),
+  };
+
+  // Wedstrijden
+  wedstrijden.forEach(w => {
+    const id = w.ID || w.id;
+    const t = document.getElementById('w' + id + '_thuis');
+    const u = document.getElementById('w' + id + '_uit');
+    if (t && u && t.value !== '' && u.value !== '') {
+      data['w' + id] = t.value + '-' + u.value;
+    } else {
+      data['w' + id] = '';
+    }
+  });
+
+  // Rondes
+  const rondeConfigs = [
+    { prefix: 'r16_', count: 32 },
+    { prefix: 'r8_', count: 16 },
+    { prefix: 'kw', count: 8 },
+    { prefix: 'hf', count: 4 },
+    { prefix: 'fin', count: 2 },
+  ];
+  rondeConfigs.forEach(c => {
+    for (let i = 1; i <= c.count; i++) {
+      const el = document.getElementById(c.prefix + i);
+      data[c.prefix + i] = el ? el.value.trim() : '';
+    }
+  });
+
+  // Winnaar
+  const winEl = document.getElementById('winnaar');
+  data['winnaar'] = winEl ? winEl.value.trim() : '';
+
+  // Bonus
+  bonusvragen.forEach((v, i) => {
+    const id = v.ID || v.id || (i + 1);
+    const el = document.getElementById('b' + id);
+    data['b' + id] = el ? el.value.trim() : '';
+  });
+
+  try {
+    const resp = await fetch(SCRIPT_URL, {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+    const result = await resp.json();
+
+    if (result.success) {
+      document.getElementById('klaar-naam').textContent = data.naam + '!';
+      naarStap(5);
+      // Verberg stap indicator
+      document.querySelector('.stap-indicator').style.display = 'none';
+    } else {
+      toonAlert('alert-bonus', result.error || 'Er ging iets mis. Probeer opnieuw.', 'error');
+      btn.disabled = false;
+      btn.textContent = '✅ Inzenden!';
+    }
+  } catch (e) {
+    toonAlert('alert-bonus', 'Verbindingsfout. Controleer je internet en probeer opnieuw.', 'error');
+    btn.disabled = false;
+    btn.textContent = '✅ Inzenden!';
+  }
+}
+
+// ===================== RANGLIJST =====================
+async function laadRanglijst() {
+  const container = document.getElementById('ranglijst-container');
+  container.innerHTML = '<div class="loading"><div class="spinner"></div>Laden...</div>';
+  try {
+    const resp = await fetch(SCRIPT_URL + '?action=getRanglijst');
+    const data = await resp.json();
+
+    if (!data || data.length === 0) {
+      container.innerHTML = `
+        <div class="wacht-scherm">
+          <div style="font-size:2rem">⏳</div>
+          <p style="margin-top:12px;">De ranglijst is nog leeg.<br>Zodra wedstrijden gespeeld zijn verschijnen hier de scores!</p>
+        </div>`;
+      return;
+    }
+
+    let html = `
+      <table class="rang-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Naam</th>
+            <th>Punten</th>
+          </tr>
+        </thead>
+        <tbody>`;
+
+    data.forEach((r, i) => {
+      const klasse = i === 0 ? 'rang-1' : i === 1 ? 'rang-2' : i === 2 ? 'rang-3' : '';
+      const medal = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : '';
+      html += `
+        <tr class="${klasse}">
+          <td class="rang-nr">${medal || (i+1)}</td>
+          <td>${r.naam}</td>
+          <td>
+            <span class="punten-badge">${r.totaal}</span>
+            <div class="sub-punten">W:${r.punten_wedstrijden} R:${r.punten_rondes} B:${r.punten_bonus}</div>
+          </td>
+        </tr>`;
+    });
+
+    html += '</tbody></table>';
+    container.innerHTML = html;
+
+  } catch (e) {
+    container.innerHTML = '<div class="alert alert-error show">Fout bij laden ranglijst.</div>';
+  }
+}
+
+// ===================== HELPERS =====================
+function toonAlert(id, msg, type) {
+  const el = document.getElementById(id);
+  el.textContent = msg;
+  el.className = 'alert alert-' + type + ' show';
+  el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function verbergAlert(id) {
+  const el = document.getElementById(id);
+  el.className = 'alert';
+}
+
+// ===================== INIT =====================
+updateStapIndicator(1);
+</script>
+</body>
+</html>
