@@ -351,6 +351,36 @@
   }
   .punten-uitleg strong { color: var(--licht); }
 
+  .rang-table { width: 100%; border-collapse: collapse; }
+  .rang-table th {
+    font-family: 'Oswald', sans-serif;
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--grijs);
+    padding: 8px 8px;
+    text-align: left;
+    border-bottom: 2px solid var(--goud);
+  }
+  .rang-table td {
+    padding: 10px 8px;
+    font-size: 0.9rem;
+    border-bottom: 1px solid #222;
+  }
+  .rang-table tr:hover td { background: #2a2a2a; }
+  .rang-1 td { color: var(--goud); font-weight: 700; }
+  .rang-2 td { color: #C0C0C0; }
+  .rang-3 td { color: #CD7F32; }
+  .punten-badge {
+    background: var(--rood);
+    color: var(--wit);
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-family: 'Oswald', sans-serif;
+    font-size: 0.85rem;
+  }
+  .sub-punten { font-size: 0.75rem; color: var(--grijs); margin-top: 2px; }
+
   .stat-rij {
     display: flex;
     justify-content: space-between;
@@ -404,6 +434,7 @@
       <button class="tab-btn" onclick="toonTab('rondes', this)">🏅 Rondes</button>
       <button class="tab-btn" onclick="toonTab('bonus', this)">🎯 Bonusvragen</button>
       <button class="tab-btn" onclick="toonTab('puntentelling', this)">🏆 Puntentelling</button>
+      <button class="tab-btn" onclick="toonTab('ranglijst', this)">📊 Ranglijst</button>
     </div>
 
     <!-- TAB: WEDSTRIJDUITSLAGEN -->
@@ -549,6 +580,21 @@
       </div>
     </div>
 
+    <!-- TAB: RANGLIJST -->
+    <div class="tab-inhoud" id="tab-ranglijst">
+      <div class="card">
+        <h2>📊 Ranglijst</h2>
+        <div class="info-box">
+          Actuele stand van alle deelnemers. Klik op <strong>Vernieuwen</strong> na een herberekening om de nieuwste stand te zien.
+        </div>
+        <div id="alert-ranglijst" class="alert"></div>
+        <button class="btn btn-goud" style="margin-top:0; margin-bottom:16px;" onclick="laadRanglijst()">↻ Vernieuwen</button>
+        <div id="ranglijst-admin-container">
+          <div class="loading"><div class="spinner"></div>Laden...</div>
+        </div>
+      </div>
+    </div>
+
   </div>
 </div>
 
@@ -612,6 +658,7 @@ function toonTab(naam, knop) {
   if (naam === 'bonus' && bonusvragen.length === 0) laadBonus();
   if (naam === 'puntentelling') laadStats();
   if (naam === 'rondes') laadRondes();
+  if (naam === 'ranglijst') laadRanglijst();
 }
 
 // ===================== WEDSTRIJDEN =====================
@@ -1024,6 +1071,56 @@ function exporteerEmailsCSV() {
   a.download = 'rembrandt_wk_deelnemers.csv';
   a.click();
   URL.revokeObjectURL(url);
+}
+
+// ===================== RANGLIJST =====================
+async function laadRanglijst() {
+  const container = document.getElementById('ranglijst-admin-container');
+  container.innerHTML = '<div class="loading"><div class="spinner"></div>Laden...</div>';
+  try {
+    const resp = await fetch(SCRIPT_URL + '?actie=getRanglijst');
+    const json = await resp.json();
+    const data = json.ranglijst || json || [];
+
+    if (!data || data.length === 0) {
+      container.innerHTML = '<div class="alert alert-info show">Nog geen ranglijst beschikbaar. Herbereken eerst de puntentelling.</div>';
+      return;
+    }
+
+    let html = `
+      <table class="rang-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Naam</th>
+            <th>Wedstrijden</th>
+            <th>Rondes</th>
+            <th>Bonus</th>
+            <th>Totaal</th>
+          </tr>
+        </thead>
+        <tbody>`;
+
+    data.forEach((r, i) => {
+      const klasse = i === 0 ? 'rang-1' : i === 1 ? 'rang-2' : i === 2 ? 'rang-3' : '';
+      const medal  = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : (i + 1);
+      html += `
+        <tr class="${klasse}">
+          <td style="font-family:'Oswald',sans-serif; font-weight:700;">${medal}</td>
+          <td style="font-weight:600;">${r.naam}</td>
+          <td>${r.punten_wedstrijden}</td>
+          <td>${r.punten_rondes}</td>
+          <td>${r.punten_bonus}</td>
+          <td><span class="punten-badge">${r.totaal}</span></td>
+        </tr>`;
+    });
+
+    html += '</tbody></table>';
+    container.innerHTML = html;
+
+  } catch (e) {
+    container.innerHTML = '<div class="alert alert-error show">Fout bij laden ranglijst.</div>';
+  }
 }
 
 // ===================== HELPERS =====================
