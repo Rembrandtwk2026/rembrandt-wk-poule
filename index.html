@@ -1107,7 +1107,7 @@ async function verstuurVoorspelling() {
     });
     const result = await resp.json();
 
-    if (result.success) {
+    if (result.succes) {
       document.getElementById('klaar-naam').textContent = naam + '!';
       // Toon emailbevestiging als er een emailadres is
       const email = document.getElementById('inp-email').value.trim();
@@ -1119,7 +1119,7 @@ async function verstuurVoorspelling() {
       document.getElementById('stap-indicator').style.display = 'none';
     } else {
       // FIX: toon foutmelding van het Apps Script (bijv. "naam bestaat al")
-      toonAlert('alert-bonus', '⚠️ ' + (result.error || 'Er ging iets mis. Probeer opnieuw.'), 'error');
+      toonAlert('alert-bonus', '⚠️ ' + (result.fout || 'Er ging iets mis. Probeer opnieuw.'), 'error');
       btn.disabled = false;
       btn.textContent = '✅ Inzenden!';
     }
