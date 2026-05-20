@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Rembrandt WK Poule 2026</title>
+<title>Beheer — Rembrandt WK Poule 2026</title>
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -18,6 +18,7 @@
     --wit: #ffffff;
     --grijs: #9a8e7a;
     --groen: #2d8a4e;
+    --groen2: #4caf7d;
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -31,64 +32,29 @@
 
   .header {
     background: var(--donker2);
-    border-bottom: 3px solid var(--bruin);
+    border-bottom: 3px solid var(--rood2);
     padding: 12px 20px;
     text-align: center;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-  }
-  .header-logo {
-    height: 64px;
-    width: auto;
-    display: block;
-    margin: 0 auto 6px;
-    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
   }
   .header h1 {
     font-family: 'Oswald', sans-serif;
-    font-size: 1.3rem;
-    color: var(--goud);
+    font-size: 1.2rem;
+    color: var(--rood2);
     letter-spacing: 3px;
     text-transform: uppercase;
   }
   .header p { font-size: 0.75rem; color: var(--grijs); margin-top: 2px; }
 
-  .nav {
-    display: flex;
-    background: var(--donker2);
-    border-bottom: 1px solid #333;
-    overflow-x: auto;
+  .login-scherm {
+    max-width: 360px;
+    margin: 60px auto;
+    padding: 0 16px;
   }
-  .nav button {
-    flex: 1;
-    min-width: 80px;
-    padding: 12px 8px;
-    background: none;
-    border: none;
-    color: var(--grijs);
-    font-family: 'Oswald', sans-serif;
-    font-size: 0.85rem;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    cursor: pointer;
-    border-bottom: 3px solid transparent;
-    transition: all 0.2s;
-  }
-  .nav button.active {
-    color: var(--goud2);
-    border-bottom-color: var(--goud2);
-  }
-  .nav button:hover { color: var(--licht); }
-
-  .page { display: none; padding: 20px 16px; max-width: 700px; margin: 0 auto; }
-  .page.active { display: block; }
-
   .card {
     background: var(--donker2);
     border: 1px solid #333;
     border-radius: 8px;
-    padding: 20px;
+    padding: 24px;
     margin-bottom: 16px;
   }
   .card h2 {
@@ -97,7 +63,7 @@
     font-size: 1.1rem;
     letter-spacing: 1px;
     text-transform: uppercase;
-    margin-bottom: 12px;
+    margin-bottom: 16px;
     padding-bottom: 8px;
     border-bottom: 1px solid #333;
   }
@@ -107,8 +73,44 @@
     font-size: 0.95rem;
     letter-spacing: 1px;
     text-transform: uppercase;
-    margin: 16px 0 8px;
+    margin: 20px 0 10px;
   }
+
+  .beheer-scherm { display: none; }
+  .beheer-inhoud {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px 16px;
+  }
+
+  .tabs {
+    display: flex;
+    background: var(--donker2);
+    border-bottom: 1px solid #333;
+    overflow-x: auto;
+    margin-bottom: 20px;
+    border-radius: 8px 8px 0 0;
+  }
+  .tab-btn {
+    flex: 1;
+    min-width: 100px;
+    padding: 12px 8px;
+    background: none;
+    border: none;
+    color: var(--grijs);
+    font-family: 'Oswald', sans-serif;
+    font-size: 0.8rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition: all 0.2s;
+  }
+  .tab-btn.active { color: var(--goud2); border-bottom-color: var(--goud2); }
+  .tab-btn:hover { color: var(--licht); }
+
+  .tab-inhoud { display: none; }
+  .tab-inhoud.active { display: block; }
 
   .form-group { margin-bottom: 14px; }
   .form-group label {
@@ -134,48 +136,144 @@
     outline: none;
     border-color: var(--goud);
   }
-  .form-group input::placeholder { color: #555; }
+  .form-group input[type="password"] { letter-spacing: 2px; }
 
-  .wedstrijd-row {
+  .wedstrijd-rij {
     display: grid;
-    grid-template-columns: 1fr auto 1fr;
+    grid-template-columns: 1fr auto 1fr auto;
     align-items: center;
     gap: 8px;
     padding: 10px 0;
     border-bottom: 1px solid #2a2a2a;
   }
-  .wedstrijd-row:last-child { border-bottom: none; }
-  .team-thuis { text-align: right; font-size: 0.9rem; font-weight: 600; }
-  .team-uit { text-align: left; font-size: 0.9rem; font-weight: 600; }
-  .team-thuis.nl, .team-uit.nl { color: var(--goud); }
-  .score-input {
+  .wedstrijd-rij:last-child { border-bottom: none; }
+  .team-naam { font-size: 0.9rem; font-weight: 600; }
+  .team-naam.thuis { text-align: right; }
+  .score-velden {
     display: flex;
     align-items: center;
     gap: 4px;
-    justify-content: center;
   }
-  .score-input input {
-    width: 40px !important;
+  .score-velden input {
+    width: 44px !important;
     text-align: center;
     padding: 8px 4px !important;
     font-size: 1.1rem !important;
     font-weight: 700;
-    /* FIX: geen placeholder "0" meer — leeg veld = niet ingevuld */
   }
-  .score-input span { color: var(--grijs); font-weight: 700; }
+  .score-velden span { color: var(--grijs); font-weight: 700; }
+  .opslaan-btn {
+    background: #333;
+    border: 1px solid #555;
+    color: var(--licht);
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    font-family: 'Oswald', sans-serif;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+    transition: all 0.2s;
+  }
+  .opslaan-btn:hover { background: var(--groen); border-color: var(--groen); }
+  .opslaan-btn.opgeslagen { background: var(--groen); border-color: var(--groen); color: #fff; }
+  .opslaan-btn.bezig { background: #555; cursor: not-allowed; }
 
-  /* Visuele markering als beide scores ingevuld zijn */
-  .wedstrijd-row.ingevuld .score-input input {
-    border-color: #4caf7d !important;
-    background: #e8f5ee !important;
-    color: #1a1208 !important;
+  .sectie-datum {
+    font-size: 0.75rem;
+    color: var(--grijs);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin: 20px 0 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .sectie-datum::before, .sectie-datum::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: #333;
   }
 
-  .landen-grid {
+  .bonus-rij {
+    padding: 12px 0;
+    border-bottom: 1px solid #2a2a2a;
+  }
+  .bonus-rij:last-child { border-bottom: none; }
+  .bonus-vraag-tekst {
+    font-size: 0.85rem;
+    color: var(--grijs);
+    margin-bottom: 8px;
+  }
+  .bonus-antwoord-rij {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+  .bonus-antwoord-rij input {
+    flex: 1;
+    background: #111;
+    border: 1px solid #444;
+    border-radius: 6px;
+    color: var(--licht);
+    padding: 8px 12px;
+    font-size: 0.95rem;
+    font-family: 'Source Sans 3', sans-serif;
+  }
+  .bonus-antwoord-rij input:focus { outline: none; border-color: var(--goud); }
+
+  /* RONDES STIJL */
+  .ronde-sectie {
+    border: 1px solid #3a2a1a;
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 16px;
+    background: #1e140a;
+  }
+  .ronde-titel {
+    font-family: 'Oswald', sans-serif;
+    font-size: 1rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--goud2);
+    margin-bottom: 4px;
+  }
+  .ronde-uitleg {
+    font-size: 0.82rem;
+    color: var(--grijs);
+    margin-bottom: 12px;
+  }
+  .landen-checkboxes {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
     gap: 8px;
     margin-top: 8px;
+  }
+  .land-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 10px;
+    background: #111;
+    border: 1px solid #444;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.82rem;
+  }
+  .land-checkbox:hover { border-color: var(--goud); }
+  .land-checkbox.geselecteerd {
+    background: #1a3d2a;
+    border-color: var(--groen2);
+    color: #7de0a0;
+  }
+  .land-checkbox input[type="checkbox"] {
+    width: 16px !important;
+    height: 16px;
+    accent-color: var(--groen2);
+    cursor: pointer;
+    flex-shrink: 0;
   }
 
   .btn {
@@ -197,15 +295,10 @@
   .btn:hover { background: var(--rood); }
   .btn:active { transform: scale(0.98); }
   .btn:disabled { background: #444; cursor: not-allowed; }
-  .btn-gold { background: var(--goud); color: var(--donker); }
-  .btn-gold:hover { background: #d4a800; }
-  .btn-small {
-    display: inline-block;
-    width: auto;
-    padding: 8px 16px;
-    font-size: 0.85rem;
-    margin-top: 8px;
-  }
+  .btn-groen { background: var(--groen); }
+  .btn-groen:hover { background: #237a40; }
+  .btn-goud { background: var(--goud); color: var(--donker); }
+  .btn-goud:hover { background: #c49010; }
 
   .alert {
     padding: 12px 16px;
@@ -218,42 +311,6 @@
   .alert-success { background: #1a3d2a; border: 1px solid var(--groen); color: #7de0a0; }
   .alert-error { background: #3d1a1a; border: 1px solid var(--rood); color: #e07d7d; }
   .alert-info { background: #1a2a3d; border: 1px solid #2a5a8a; color: #7db0e0; }
-  .alert-warning { background: #3d2e0a; border: 1px solid var(--goud); color: #f5c518; }
-
-  .rang-table { width: 100%; border-collapse: collapse; }
-  .rang-table th {
-    font-family: 'Oswald', sans-serif;
-    font-size: 0.75rem;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    color: var(--grijs);
-    padding: 8px 6px;
-    text-align: left;
-    border-bottom: 1px solid #333;
-  }
-  .rang-table td {
-    padding: 10px 6px;
-    font-size: 0.9rem;
-    border-bottom: 1px solid #222;
-  }
-  .rang-table tr:hover td { background: #2a2a2a; }
-  .rang-1 td { color: var(--goud); font-weight: 700; }
-  .rang-2 td { color: #C0C0C0; }
-  .rang-3 td { color: #CD7F32; }
-  .rang-nr {
-    font-family: 'Oswald', sans-serif;
-    font-size: 1rem;
-    font-weight: 700;
-    width: 30px;
-  }
-  .punten-badge {
-    background: var(--rood);
-    color: var(--wit);
-    padding: 2px 8px;
-    border-radius: 12px;
-    font-family: 'Oswald', sans-serif;
-    font-size: 0.85rem;
-  }
 
   .loading {
     text-align: center;
@@ -270,97 +327,6 @@
   }
   @keyframes spin { to { transform: rotate(360deg); } }
 
-  .stap-indicator {
-    display: flex;
-    align-items: center;
-    margin-bottom: 20px;
-  }
-  .stap {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 0.75rem;
-    color: var(--grijs);
-    text-transform: uppercase;
-    letter-spacing: 1px;
-  }
-  .stap-nr {
-    width: 24px; height: 24px;
-    border-radius: 50%;
-    background: #333;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: 'Oswald', sans-serif;
-    font-size: 0.8rem;
-    flex-shrink: 0;
-  }
-  .stap.active .stap-nr { background: var(--goud); color: var(--donker); }
-  .stap.done .stap-nr { background: var(--groen); color: var(--wit); }
-  .stap.active { color: var(--licht); }
-  .stap-lijn { flex: 1; height: 1px; background: #333; margin: 0 6px; }
-
-  .sectie-datum {
-    font-size: 0.75rem;
-    color: var(--grijs);
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    margin: 20px 0 8px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  .sectie-datum::before, .sectie-datum::after {
-    content: '';
-    flex: 1;
-    height: 1px;
-    background: #333;
-  }
-
-  .bonus-item {
-    padding: 10px 0;
-    border-bottom: 1px solid #2a2a2a;
-  }
-  .bonus-item:last-child { border-bottom: none; }
-  .bonus-vraag {
-    font-size: 0.85rem;
-    color: var(--grijs);
-    margin-bottom: 6px;
-  }
-  .bonus-item input {
-    width: 100%;
-    background: #111;
-    border: 1px solid #444;
-    border-radius: 6px;
-    color: var(--licht);
-    padding: 8px 12px;
-    font-size: 0.95rem;
-    font-family: 'Source Sans 3', sans-serif;
-  }
-  .bonus-item input:focus { outline: none; border-color: var(--goud); }
-
-  .progress-bar {
-    height: 4px;
-    background: #333;
-    border-radius: 2px;
-    margin: 8px 0 4px;
-    overflow: hidden;
-  }
-  .progress-fill {
-    height: 100%;
-    background: var(--goud);
-    border-radius: 2px;
-    transition: width 0.3s;
-  }
-  .progress-text {
-    font-size: 0.75rem;
-    color: var(--grijs);
-    text-align: right;
-    margin-bottom: 16px;
-  }
-
-  .sub-punten { font-size: 0.75rem; color: var(--grijs); }
-
   .info-box {
     background: #111;
     border-left: 3px solid var(--goud);
@@ -373,497 +339,282 @@
   }
   .info-box strong { color: var(--licht); }
 
-  .wacht-scherm {
-    text-align: center;
-    padding: 40px 20px;
-  }
-  .wacht-scherm .groot-getal {
-    font-family: 'Oswald', sans-serif;
-    font-size: 4rem;
-    color: var(--goud);
-    line-height: 1;
-  }
-  .wacht-scherm p { color: var(--grijs); margin-top: 8px; }
-
-  @media (max-width: 400px) {
-    .team-thuis, .team-uit { font-size: 0.75rem; }
-    .landen-grid { grid-template-columns: 1fr; }
-  }
-
-  html { scroll-behavior: smooth; }
-
-  .stap-pagina { display: none; }
-  .stap-pagina.active { display: block; }
-
-  .ronde-sectie {
-    border: 1px solid #3a2a1a;
+  .punten-uitleg {
+    background: #111;
+    border: 1px solid #333;
     border-radius: 8px;
-    padding: 14px;
-    margin: 12px 0;
-    background: #1e140a;
-  }
-  .ronde-header {
-    display: flex;
-    align-items: flex-start;
-    gap: 10px;
-    margin-bottom: 10px;
-  }
-  .ronde-icon { font-size: 1.4rem; flex-shrink: 0; margin-top: 2px; }
-  .ronde-titel {
-    font-family: 'Oswald', sans-serif;
-    font-size: 1rem;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    color: var(--goud2);
-    margin-bottom: 4px;
-  }
-  .ronde-uitleg {
-    font-size: 0.82rem;
+    padding: 16px;
+    margin-bottom: 16px;
+    font-size: 0.85rem;
     color: var(--grijs);
-    line-height: 1.5;
+    line-height: 1.8;
   }
-  .ronde-uitleg strong { color: var(--licht); }
-  .pnt-badge {
-    display: inline-block;
-    background: var(--rood);
-    color: var(--wit);
-    padding: 1px 7px;
-    border-radius: 10px;
-    font-size: 0.75rem;
+  .punten-uitleg strong { color: var(--licht); }
+
+  .stat-rij {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid #2a2a2a;
+    font-size: 0.9rem;
+  }
+  .stat-rij:last-child { border-bottom: none; }
+  .stat-label { color: var(--grijs); }
+  .stat-waarde {
     font-family: 'Oswald', sans-serif;
-    letter-spacing: 0.5px;
+    font-size: 1.1rem;
+    color: var(--goud2);
   }
 
-  /* FIX: naam-check loader */
-  .naam-check-bezig {
-    opacity: 0.6;
-    pointer-events: none;
+  @media (max-width: 500px) {
+    .wedstrijd-rij { grid-template-columns: 1fr auto 1fr; }
+    .opslaan-btn { display: none; }
+    .landen-checkboxes { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); }
   }
 </style>
 </head>
 <body>
 
 <div class="header">
-  <img src="images/logo/logo.png" alt="Rembrandt Pub" class="header-logo" onerror="this.style.display='none'">  <h1>WK POULE 2026</h1>
-  <p>Vul je voorspellingen in voor het WK!</p>
+  <h1>⚙️ Beheerdersscherm</h1>
+  <p>Rembrandt WK Poule 2026 — Alleen voor beheerders</p>
 </div>
 
-<nav class="nav" id="hoofd-nav">
-  <button class="active" onclick="toonPagina('invullen', this)">Meedoen</button>
-  <button onclick="toonPagina('ranglijst', this)">Ranglijst</button>
-  <button onclick="toonPagina('regels', this)">Regels</button>
-</nav>
-
-<!-- ==================== PAGINA: INVULLEN ==================== -->
-<div class="page active" id="pagina-invullen">
-
-  <div style="padding: 16px 16px 0; max-width: 700px; margin: 0 auto;">
-    <div class="stap-indicator" id="stap-indicator">
-      <div class="stap active" id="stap-ind-1">
-        <div class="stap-nr">1</div>
-        <span>Gegevens</span>
-      </div>
-      <div class="stap-lijn"></div>
-      <div class="stap" id="stap-ind-2">
-        <div class="stap-nr">2</div>
-        <span>Wedstrijden</span>
-      </div>
-      <div class="stap-lijn"></div>
-      <div class="stap" id="stap-ind-3">
-        <div class="stap-nr">3</div>
-        <span>Rondes</span>
-      </div>
-      <div class="stap-lijn"></div>
-      <div class="stap" id="stap-ind-4">
-        <div class="stap-nr">4</div>
-        <span>Bonus</span>
-      </div>
-    </div>
-  </div>
-
-  <div style="padding: 0 16px 20px; max-width: 700px; margin: 0 auto;">
-
-  <!-- STAP 1: GEGEVENS -->
-  <div class="stap-pagina active" id="stap1">
-    <div class="card">
-      <h2>👤 Jouw gegevens</h2>
-      <div class="info-box">
-        Deelnemen kost <strong>€ 25,-</strong>. Prijzen: <strong>1e 60%</strong> · <strong>2e 30%</strong> · <strong>3e 10%</strong> van de pot.<br>
-        Inleveren uiterlijk <strong>dinsdag 9 juni</strong>!
-      </div>
-      <div id="alert-gegevens" class="alert"></div>
-      <div class="form-group">
-        <label>Naam *</label>
-        <input type="text" id="inp-naam" placeholder="Voor- en achternaam" autocomplete="name"
-          oninput="verbergAlert('alert-gegevens')">
-      </div>
-      <div class="form-group">
-        <label>Telefoonnummer</label>
-        <input type="tel" id="inp-telefoon" placeholder="06-12345678" autocomplete="tel">
-      </div>
-      <div class="form-group">
-        <label>E-mailadres *</label>
-        <input type="email" id="inp-email" placeholder="naam@email.nl" autocomplete="email"
-          oninput="verbergAlert('alert-gegevens'); emailCheckDebounced()">
-        <div id="email-status" style="font-size:0.8rem; margin-top:5px; min-height:18px;"></div>
-      </div>
-      <button class="btn" id="btn-naar-stap2" onclick="naarStap2()">Volgende: Wedstrijden →</button>
-    </div>
-  </div>
-
-  <!-- STAP 2: WEDSTRIJDEN -->
-  <div class="stap-pagina" id="stap2">
-    <div class="card">
-      <h2>⚽ Wedstrijduitslagen</h2>
-      <div class="info-box">
-        Juiste toto (thuis/gelijk/uit): <strong>5 punten</strong><br>
-        Juiste uitslag: <strong>10 punten</strong><br>
-        <strong>Tip:</strong> Laat een veld leeg als je geen uitslag wil invullen. Vul <strong>0</strong> in als je 0 doelpunten verwacht.
-      </div>
-      <div class="progress-bar"><div class="progress-fill" id="voortgang-bar" style="width:0%"></div></div>
-      <div class="progress-text" id="voortgang-tekst">0 van 72 ingevuld</div>
-      <div id="alert-wedstrijden" class="alert"></div>
-      <div id="wedstrijden-container">
-        <div class="loading"><div class="spinner"></div>Wedstrijden laden...</div>
-      </div>
-      <div style="display:flex; gap:8px; margin-top:16px;">
-        <button class="btn" style="background:#333; flex:1" onclick="naarStap(1)">← Terug</button>
-        <button class="btn" style="flex:2" onclick="naarStap3()">Volgende: Rondes →</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- STAP 3: RONDES -->
-  <div class="stap-pagina" id="stap3">
-    <div class="card">
-      <h2>🏆 Doorgestroomde landen</h2>
-      <div class="info-box">
-        Welke landen komen er door naar elke ronde van het toernooi?<br>
-        Kies per ronde de landen die jij verwacht. Hoe verder een land komt dat jij goed voorspeld hebt, hoe meer punten!
-      </div>
-      <div id="alert-rondes" class="alert"></div>
-
-      <div class="ronde-sectie">
-        <div class="ronde-header">
-          <span class="ronde-icon">🔵</span>
-          <div>
-            <div class="ronde-titel">16e Finales</div>
-            <div class="ronde-uitleg">Welke <strong>32 landen</strong> komen door uit de groepsfase? <span class="pnt-badge">15 pnt per land</span></div>
-          </div>
-        </div>
-        <div class="landen-grid" id="r16-grid"></div>
-      </div>
-
-      <div class="ronde-sectie">
-        <div class="ronde-header">
-          <span class="ronde-icon">🟡</span>
-          <div>
-            <div class="ronde-titel">8e Finales</div>
-            <div class="ronde-uitleg">Welke <strong>16 landen</strong> gaan door? <span class="pnt-badge">25 pnt per land</span></div>
-          </div>
-        </div>
-        <div class="landen-grid" id="r8-grid"></div>
-      </div>
-
-      <div class="ronde-sectie">
-        <div class="ronde-header">
-          <span class="ronde-icon">🟠</span>
-          <div>
-            <div class="ronde-titel">Kwartfinales</div>
-            <div class="ronde-uitleg">Welke <strong>8 landen</strong> bereiken de kwartfinale? <span class="pnt-badge">50 pnt per land</span></div>
-          </div>
-        </div>
-        <div class="landen-grid" id="kw-grid"></div>
-      </div>
-
-      <div class="ronde-sectie">
-        <div class="ronde-header">
-          <span class="ronde-icon">🔴</span>
-          <div>
-            <div class="ronde-titel">Halve Finales</div>
-            <div class="ronde-uitleg">Welke <strong>4 landen</strong> spelen de halve finale? <span class="pnt-badge">100 pnt per land</span></div>
-          </div>
-        </div>
-        <div class="landen-grid" id="hf-grid"></div>
-      </div>
-
-      <div class="ronde-sectie">
-        <div class="ronde-header">
-          <span class="ronde-icon">⭐</span>
-          <div>
-            <div class="ronde-titel">Finale</div>
-            <div class="ronde-uitleg">Welke <strong>2 landen</strong> spelen de finale? <span class="pnt-badge">150 pnt per land</span></div>
-          </div>
-        </div>
-        <div class="landen-grid" id="fin-grid"></div>
-      </div>
-
-      <div class="ronde-sectie">
-        <div class="ronde-header">
-          <span class="ronde-icon">🥇</span>
-          <div>
-            <div class="ronde-titel">Wereldkampioen</div>
-            <div class="ronde-uitleg">Welk land wordt <strong>wereldkampioen</strong>? <span class="pnt-badge">200 pnt</span></div>
-          </div>
-        </div>
-        <div class="landen-grid" id="win-grid"></div>
-      </div>
-
-      <div style="display:flex; gap:8px; margin-top:16px;">
-        <button class="btn" style="background:#333; flex:1" onclick="naarStap(2)">← Terug</button>
-        <button class="btn" style="flex:2" onclick="naarStap4()">Volgende: Bonusvragen →</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- STAP 4: BONUS -->
-  <div class="stap-pagina" id="stap4">
-    <div class="card">
-      <h2>🎯 Bonusvragen</h2>
-      <div class="info-box">
-        Per goed antwoord: <strong>35 punten</strong>
-      </div>
-      <div id="alert-bonus" class="alert"></div>
-      <div id="bonus-container">
-        <div class="loading"><div class="spinner"></div>Laden...</div>
-      </div>
-      <div style="display:flex; gap:8px; margin-top:16px;">
-        <button class="btn" style="background:#333; flex:1" onclick="naarStap(3)">← Terug</button>
-        <button class="btn btn-gold" style="flex:2" onclick="verstuurVoorspelling()">✅ Inzenden!</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- STAP 5: KLAAR -->
-  <div class="stap-pagina" id="stap5">
-    <div class="card">
-      <div class="wacht-scherm">
-        <div style="font-size: 3rem; margin-bottom: 12px;">🎉</div>
-        <div class="groot-getal" id="klaar-naam">Super!</div>
-        <p style="margin-top: 12px; color: var(--licht);">Je voorspelling is opgeslagen!</p>
-        <p style="margin-top: 8px;">Vergeet niet <strong style="color:var(--goud)">€ 25,-</strong> te betalen aan de Rembrandt Pub.</p>
-        <div id="klaar-email-melding" style="margin-top:14px; padding:10px 16px; background:#1a2a1a; border:1px solid #2d8a4e; border-radius:8px; font-size:0.85rem; color:#7de0a0; display:none;">
-          📧 Een bevestiging met al jouw voorspellingen is verstuurd naar <strong id="klaar-email-adres"></strong>
-        </div>
-        <p style="margin-top: 16px; font-size: 0.85rem; color: var(--grijs);">Kijk via de Ranglijst hoe je het doet zodra wedstrijden gespeeld zijn.</p>
-        <button class="btn btn-gold" style="margin-top: 24px; max-width: 200px; margin-left:auto; margin-right:auto;" onclick="toonPagina('ranglijst', null)">Bekijk ranglijst</button>
-      </div>
-    </div>
-  </div>
-
-  </div>
-</div>
-
-<!-- ==================== PAGINA: RANGLIJST ==================== -->
-<div class="page" id="pagina-ranglijst">
+<!-- LOGIN -->
+<div class="login-scherm" id="login-scherm">
   <div class="card">
-    <h2>🏆 Ranglijst</h2>
-    <div id="ranglijst-container">
-      <div class="loading"><div class="spinner"></div>Ranglijst laden...</div>
+    <h2>🔐 Inloggen</h2>
+    <div id="alert-login" class="alert"></div>
+    <div class="form-group">
+      <label>Wachtwoord</label>
+      <input type="password" id="inp-wachtwoord" placeholder="••••••••••"
+        onkeydown="if(event.key==='Enter') inloggen()">
     </div>
-    <button class="btn btn-small" style="background:#333; width:auto; margin-top:12px;" onclick="laadRanglijst()">↻ Vernieuwen</button>
+    <button class="btn" onclick="inloggen()">Inloggen</button>
   </div>
 </div>
 
-<!-- ==================== PAGINA: REGELS ==================== -->
-<div class="page" id="pagina-regels">
-  <div class="card">
-    <h2>📋 Regels & Puntentelling</h2>
-    <div class="info-box" style="margin-bottom: 12px;">
-      <strong>Deelnamekosten: € 25,-</strong><br>
-      Inleveren uiterlijk dinsdag 9 juni 2026
+<!-- BEHEER -->
+<div class="beheer-scherm" id="beheer-scherm">
+  <div class="beheer-inhoud">
+
+    <div class="tabs">
+      <button class="tab-btn active" onclick="toonTab('wedstrijden', this)">⚽ Uitslagen</button>
+      <button class="tab-btn" onclick="toonTab('rondes', this)">🏅 Rondes</button>
+      <button class="tab-btn" onclick="toonTab('bonus', this)">🎯 Bonusvragen</button>
+      <button class="tab-btn" onclick="toonTab('puntentelling', this)">🏆 Puntentelling</button>
     </div>
-    <h3>Wedstrijdpunten</h3>
-    <div class="info-box">
-      Juiste toto (thuis/gelijk/uit): <strong>5 punten</strong><br>
-      Juiste uitslag: <strong>10 punten</strong>
+
+    <!-- TAB: WEDSTRIJDUITSLAGEN -->
+    <div class="tab-inhoud active" id="tab-wedstrijden">
+      <div class="card">
+        <h2>⚽ Wedstrijduitslagen invoeren</h2>
+        <div class="info-box">
+          Vul per gespeelde wedstrijd de officiële uitslag in en klik op <strong>Opslaan</strong>.<br>
+          Na het invoeren kun je bij het tabblad Puntentelling de punten herberekenen.
+        </div>
+        <div id="alert-wedstrijden" class="alert"></div>
+        <div id="wedstrijden-container">
+          <div class="loading"><div class="spinner"></div>Wedstrijden laden...</div>
+        </div>
+      </div>
     </div>
-    <h3>Doorgestroomde landen</h3>
-    <div class="info-box">
-      16e finales (32 landen): <strong>15 punten</strong> per land<br>
-      8e finales (16 landen): <strong>25 punten</strong> per land<br>
-      Kwartfinales (8 landen): <strong>50 punten</strong> per land<br>
-      Halve finales (4 landen): <strong>100 punten</strong> per land<br>
-      Finale (2 landen): <strong>150 punten</strong> per land<br>
-      Winnaar: <strong>200 punten</strong>
+
+    <!-- TAB: RONDES -->
+    <div class="tab-inhoud" id="tab-rondes">
+      <div class="card">
+        <h2>🏅 Doorgestroomde landen invoeren</h2>
+        <div class="info-box">
+          Vink aan welke landen er echt zijn doorgegaan naar elke ronde.<br>
+          Klik daarna op <strong>Opslaan</strong> om de selectie op te slaan in Google Sheets.<br>
+          Vergeet niet daarna bij <strong>Puntentelling</strong> te herberekenen!
+        </div>
+        <div id="alert-rondes" class="alert"></div>
+
+        <!-- 16e Finales -->
+        <div class="ronde-sectie">
+          <div class="ronde-titel">🔵 16e Finales</div>
+          <div class="ronde-uitleg">Welke 32 landen zijn doorgegaan uit de groepsfase? (15 pnt per land)</div>
+          <div class="landen-checkboxes" id="check-r16"></div>
+        </div>
+
+        <!-- 8e Finales -->
+        <div class="ronde-sectie">
+          <div class="ronde-titel">🟡 8e Finales</div>
+          <div class="ronde-uitleg">Welke 16 landen zijn doorgegaan? (25 pnt per land)</div>
+          <div class="landen-checkboxes" id="check-r8"></div>
+        </div>
+
+        <!-- Kwartfinales -->
+        <div class="ronde-sectie">
+          <div class="ronde-titel">🟠 Kwartfinales</div>
+          <div class="ronde-uitleg">Welke 8 landen hebben de kwartfinale bereikt? (50 pnt per land)</div>
+          <div class="landen-checkboxes" id="check-kw"></div>
+        </div>
+
+        <!-- Halve Finales -->
+        <div class="ronde-sectie">
+          <div class="ronde-titel">🔴 Halve Finales</div>
+          <div class="ronde-uitleg">Welke 4 landen spelen de halve finale? (100 pnt per land)</div>
+          <div class="landen-checkboxes" id="check-hf"></div>
+        </div>
+
+        <!-- Finale -->
+        <div class="ronde-sectie">
+          <div class="ronde-titel">⭐ Finale</div>
+          <div class="ronde-uitleg">Welke 2 landen spelen de finale? (150 pnt per land)</div>
+          <div class="landen-checkboxes" id="check-fin"></div>
+        </div>
+
+        <!-- Winnaar -->
+        <div class="ronde-sectie">
+          <div class="ronde-titel">🥇 Winnaar</div>
+          <div class="ronde-uitleg">Welk land is wereldkampioen geworden? (200 pnt)</div>
+          <div class="landen-checkboxes" id="check-winnaar"></div>
+        </div>
+
+        <button class="btn btn-groen" id="btn-rondes-opslaan" onclick="slaRondesOp()">
+          💾 Rondes opslaan
+        </button>
+      </div>
     </div>
-    <h3>Bonusvragen</h3>
-    <div class="info-box">
-      Per goed antwoord: <strong>35 punten</strong>
+
+    <!-- TAB: BONUSVRAGEN -->
+    <div class="tab-inhoud" id="tab-bonus">
+      <div class="card">
+        <h2>🎯 Bonusvragen antwoorden</h2>
+        <div class="info-box">
+          Vul hier de officiële antwoorden in op de bonusvragen.<br>
+          De vergelijking is <strong>hoofdletter-onafhankelijk</strong> — "nederland" en "NEDERLAND" tellen beide als goed.
+        </div>
+        <div id="alert-bonus" class="alert"></div>
+        <div id="bonus-container">
+          <div class="loading"><div class="spinner"></div>Laden...</div>
+        </div>
+      </div>
     </div>
-    <h3>Prijzen</h3>
-    <div class="info-box">
-      🥇 1e plaats: <strong>60%</strong> van de pot<br>
-      🥈 2e plaats: <strong>30%</strong> van de pot<br>
-      🥉 3e plaats: <strong>10%</strong> van de pot
+
+    <!-- TAB: PUNTENTELLING -->
+    <div class="tab-inhoud" id="tab-puntentelling">
+      <div class="card">
+        <h2>🏆 Puntentelling herberekenen</h2>
+        <div class="info-box">
+          Klik op de knop hieronder om de ranglijst opnieuw te berekenen op basis van alle ingevoerde uitslagen en bonusantwoorden.<br>
+          <strong>Doe dit na elke wedstrijd die je hebt ingevoerd.</strong>
+        </div>
+
+        <div class="punten-uitleg">
+          <strong>Wat wordt berekend:</strong><br>
+          ✅ Juiste toto (thuis/gelijk/uit): <strong>5 punten</strong><br>
+          ✅ Juiste uitslag: <strong>10 punten</strong><br>
+          ✅ Juiste landen per ronde: <strong>15 / 25 / 50 / 100 / 150 / 200 punten</strong><br>
+          ✅ Bonusvragen: <strong>35 punten per goed antwoord</strong>
+        </div>
+
+        <div id="alert-punten" class="alert"></div>
+
+        <div class="card" style="background:#111; border-color:#333; margin-bottom:0;">
+          <h3>Laatste berekening</h3>
+          <div id="stats-container">
+            <div class="stat-rij">
+              <span class="stat-label">Deelnemers</span>
+              <span class="stat-waarde" id="stat-deelnemers">—</span>
+            </div>
+            <div class="stat-rij">
+              <span class="stat-label">Gespeelde wedstrijden</span>
+              <span class="stat-waarde" id="stat-wedstrijden">—</span>
+            </div>
+            <div class="stat-rij">
+              <span class="stat-label">Hoogste score</span>
+              <span class="stat-waarde" id="stat-hoogste">—</span>
+            </div>
+            <div class="stat-rij">
+              <span class="stat-label">Laatste update</span>
+              <span class="stat-waarde" id="stat-update">—</span>
+            </div>
+          </div>
+        </div>
+
+        <button class="btn btn-groen" id="btn-herbereken" onclick="herbereken()">
+          🔄 Puntentelling herberekenen
+        </button>
+
+        <button class="btn" style="background:#333; margin-top:8px;" onclick="laadStats()">
+          ↻ Stats vernieuwen
+        </button>
+
+        <!-- Deelnemerslijst met email -->
+        <div id="deelnemers-container" style="margin-top:20px;"></div>
+      </div>
     </div>
+
   </div>
 </div>
 
 <script>
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbynxPGdnmFNFjGVeX3YzSaa-0N89l03OjUrnIA2HWfNtmou_OdJ9D3Lfrgafn_tV_1d/exec';
+const WACHTWOORD = 'Rembrandt2026';
 
+let ingelogd = false;
 let wedstrijden = [];
 let bonusvragen = [];
-let huidigeStap = 1;
 
-// ===================== NAVIGATIE =====================
-function toonPagina(naam, knop) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
-  document.getElementById('pagina-' + naam).classList.add('active');
-  if (knop) knop.classList.add('active');
-  if (naam === 'ranglijst') laadRanglijst();
-  window.scrollTo(0, 0);
-}
+// Alle 48 landen
+const LANDEN = [
+  'ALGERIJE','ARGENTINIË','AUSTRALIË','BELGIË','BOSNIË EN HERZ.',
+  'BRAZILIË','CANADA','COLOMBIA','CONGO','CURAÇAO',
+  'DUITSLAND','ECUADOR','EGYPTE','ENGELAND','FRANKRIJK',
+  'GHANA','HAÏTI','IRAN','IRAK','IVOORKUST',
+  'JAPAN','JORDANIË','KAAPVERDIË','KROATIË','MAROKKO',
+  'MEXICO','NEDERLAND','NIEUW-ZEELAND','NOORWEGEN','OEZBEKISTAN',
+  'OOSTENRIJK','PANAMA','PARAGUAY','PORTUGAL','QATAR',
+  'SAOEDI-ARABIË','SCHOTLAND','SENEGAL','SPANJE','TSJECHIË',
+  'TUNESIË','TURKIJE','URUGUAY','VERENIGDE STATEN','ZWEDEN',
+  'ZWITSERLAND','ZUID-AFRIKA','ZUID-KOREA'
+].sort();
 
-function naarStap(nr) {
-  document.querySelectorAll('.stap-pagina').forEach(s => s.classList.remove('active'));
-  document.getElementById('stap' + nr).classList.add('active');
-  huidigeStap = nr;
-  updateStapIndicator(nr);
-  window.scrollTo(0, 0);
-}
+// Rondes configuratie
+const RONDES = [
+  { code: 'r16',     id: 'check-r16',     max: 32 },
+  { code: 'r8',      id: 'check-r8',      max: 16 },
+  { code: 'kw',      id: 'check-kw',      max: 8  },
+  { code: 'hf',      id: 'check-hf',      max: 4  },
+  { code: 'fin',     id: 'check-fin',     max: 2  },
+  { code: 'winnaar', id: 'check-winnaar', max: 1  },
+];
 
-function updateStapIndicator(actief) {
-  for (let i = 1; i <= 4; i++) {
-    const el = document.getElementById('stap-ind-' + i);
-    if (!el) continue;
-    el.classList.remove('active', 'done');
-    if (i < actief) el.classList.add('done');
-    else if (i === actief) el.classList.add('active');
+// Huidige rondeselectie (geladen uit Google Sheets)
+let rondeSelectie = {}; // { 'r16': Set(['NEDERLAND', ...]), ... }
+
+// ===================== INLOGGEN =====================
+function inloggen() {
+  const ingevoerd = document.getElementById('inp-wachtwoord').value;
+  if (ingevoerd === WACHTWOORD) {
+    ingelogd = true;
+    document.getElementById('login-scherm').style.display = 'none';
+    document.getElementById('beheer-scherm').style.display = 'block';
+    laadWedstrijden();
+  } else {
+    toonAlert('alert-login', '❌ Verkeerd wachtwoord. Probeer opnieuw.', 'error');
+    document.getElementById('inp-wachtwoord').value = '';
+    document.getElementById('inp-wachtwoord').focus();
   }
 }
 
-// ===================== EMAIL CHECK (live, debounced) =====================
-let emailCheckTimer = null;
-let emailBeschikbaar = null; // null = niet gecheckt, true = ok, false = bezet
+// ===================== TABS =====================
+function toonTab(naam, knop) {
+  document.querySelectorAll('.tab-inhoud').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + naam).classList.add('active');
+  knop.classList.add('active');
 
-function emailCheckDebounced() {
-  clearTimeout(emailCheckTimer);
-  emailBeschikbaar = null;
-  const statusEl = document.getElementById('email-status');
-  const emailEl  = document.getElementById('inp-email');
-  const email    = emailEl.value.trim();
-
-  statusEl.textContent = '';
-  emailEl.style.borderColor = '';
-
-  if (!email || !isGeldigEmail(email)) return;
-
-  statusEl.innerHTML = '<span style="color:var(--grijs)">⏳ Controleren...</span>';
-
-  emailCheckTimer = setTimeout(async function() {
-    try {
-      const resp = await fetch(SCRIPT_URL + '?actie=checkEmail&email=' + encodeURIComponent(email));
-      const data = await resp.json();
-      if (data.beschikbaar) {
-        emailBeschikbaar = true;
-        statusEl.innerHTML = '<span style="color:#4caf7d">✅ E-mailadres beschikbaar</span>';
-        emailEl.style.borderColor = '#4caf7d';
-      } else {
-        emailBeschikbaar = false;
-        statusEl.innerHTML = '<span style="color:#e07d7d">❌ Dit e-mailadres is al gebruikt</span>';
-        emailEl.style.borderColor = '#c8102e';
-      }
-    } catch(e) {
-      emailBeschikbaar = null;
-      statusEl.textContent = '';
-    }
-  }, 600);
+  if (naam === 'bonus' && bonusvragen.length === 0) laadBonus();
+  if (naam === 'puntentelling') laadStats();
+  if (naam === 'rondes') laadRondes();
 }
 
-function isGeldigEmail(email) {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-}
-
-// ===================== STAP 1 → 2 (MET NAAM + EMAIL CHECK) =====================
-async function naarStap2() {
-  const naam  = document.getElementById('inp-naam').value.trim();
-  const email = document.getElementById('inp-email').value.trim();
-
-  // Naam verplicht
-  if (!naam) {
-    toonAlert('alert-gegevens', '⚠️ Vul je naam in!', 'error');
-    document.getElementById('inp-naam').focus();
-    return;
-  }
-
-  // Email verplicht
-  if (!email) {
-    toonAlert('alert-gegevens', '⚠️ Vul je e-mailadres in!', 'error');
-    document.getElementById('inp-email').focus();
-    return;
-  }
-
-  // Email formaat controleren
-  if (!isGeldigEmail(email)) {
-    toonAlert('alert-gegevens', '⚠️ Vul een geldig e-mailadres in (bijv. naam@gmail.com).', 'error');
-    document.getElementById('inp-email').focus();
-    return;
-  }
-
-  // Als live-check al een negatief resultaat gaf: blokkeer
-  if (emailBeschikbaar === false) {
-    toonAlert('alert-gegevens', '⚠️ Dit e-mailadres is al gebruikt. Gebruik een ander e-mailadres.', 'error');
-    document.getElementById('inp-email').focus();
-    return;
-  }
-
-  const btn = document.getElementById('btn-naar-stap2');
-  btn.disabled = true;
-  btn.textContent = 'Controleren...';
-  verbergAlert('alert-gegevens');
-
-  try {
-    // CHECK 1: naam al ingediend?
-    const respNaam = await fetch(SCRIPT_URL + '?actie=checkNaam&naam=' + encodeURIComponent(naam));
-    const resultNaam = await respNaam.json();
-    if (resultNaam.bestaat) {
-      toonAlert('alert-gegevens',
-        '⚠️ De naam "' + naam + '" is al ingediend. Heb je al eerder ingevuld? Neem contact op met de Rembrandt Pub.',
-        'error');
-      btn.disabled = false;
-      btn.textContent = 'Volgende: Wedstrijden →';
-      return;
-    }
-
-    // CHECK 2: email al ingediend? (als live-check nog niet klaar was)
-    if (emailBeschikbaar === null) {
-      const respEmail = await fetch(SCRIPT_URL + '?actie=checkEmail&email=' + encodeURIComponent(email));
-      const resultEmail = await respEmail.json();
-      if (!resultEmail.beschikbaar) {
-        toonAlert('alert-gegevens',
-          '⚠️ Dit e-mailadres is al gebruikt. Gebruik een ander e-mailadres.',
-          'error');
-        emailBeschikbaar = false;
-        document.getElementById('inp-email').style.borderColor = '#c8102e';
-        document.getElementById('email-status').innerHTML = '<span style="color:#e07d7d">❌ Dit e-mailadres is al gebruikt</span>';
-        btn.disabled = false;
-        btn.textContent = 'Volgende: Wedstrijden →';
-        return;
-      }
-      emailBeschikbaar = true;
-    }
-
-    // Alles ok — door naar stap 2
-    btn.disabled = false;
-    btn.textContent = 'Volgende: Wedstrijden →';
-    naarStap(2);
-    if (wedstrijden.length === 0) await laadWedstrijden();
-
-  } catch (e) {
-    toonAlert('alert-gegevens',
-      '⚠️ Kon gegevens niet controleren, maar je kunt gewoon doorgaan.',
-      'warning');
-    btn.disabled = false;
-    btn.textContent = 'Volgende: Wedstrijden →';
-    naarStap(2);
-    if (wedstrijden.length === 0) await laadWedstrijden();
-  }
-}
-
-// ===================== WEDSTRIJDEN LADEN =====================
+// ===================== WEDSTRIJDEN =====================
 async function laadWedstrijden() {
   try {
     const resp = await fetch(SCRIPT_URL + '?actie=getWedstrijden');
@@ -877,8 +628,6 @@ async function laadWedstrijden() {
 
 function renderWedstrijden() {
   const container = document.getElementById('wedstrijden-container');
-
-  // Groepeer per datum
   const perDatum = {};
   wedstrijden.forEach(w => {
     const datum = w.Datum || w.datum || 'Onbekend';
@@ -897,119 +646,206 @@ function renderWedstrijden() {
   Object.entries(perDatum).forEach(([datum, lijst]) => {
     html += `<div class="sectie-datum">${datum}</div>`;
     lijst.forEach(w => {
-      const thuis = w.Thuis || w.thuis || '';
-      const uit = w.Uit || w.uit || '';
-      const id = w.ID || w.id;
-      const nlThuis = thuis === 'NEDERLAND';
-      const nlUit = uit === 'NEDERLAND';
+      const id     = w.ID || w.id;
+      const thuis  = w.Thuis || w.thuis || '';
+      const uit    = w.Uit   || w.uit   || '';
+      const uThuis = w.Uitslag_thuis !== undefined && w.Uitslag_thuis !== '' ? w.Uitslag_thuis : '';
+      const uUit   = w.Uitslag_uit   !== undefined && w.Uitslag_uit   !== '' ? w.Uitslag_uit   : '';
+      const heeftUitslag = uThuis !== '' && uUit !== '';
+
       html += `
-        <div class="wedstrijd-row" id="row-${id}">
-          <div class="team-thuis ${nlThuis ? 'nl' : ''}">${thuis}</div>
-          <div class="score-input">
-            <input type="number" min="0" max="20" id="w${id}_thuis"
-              placeholder="" inputmode="numeric"
-              oninput="updateVoortgang(${id})">
+        <div class="wedstrijd-rij" id="rij-${id}">
+          <div class="team-naam thuis">${thuis}</div>
+          <div class="score-velden">
+            <input type="number" min="0" max="20" id="u${id}_thuis"
+              value="${uThuis}" placeholder="" inputmode="numeric"
+              style="${heeftUitslag ? 'border-color:#4caf7d;background:#e8f5ee;color:#111;' : ''}">
             <span>-</span>
-            <input type="number" min="0" max="20" id="w${id}_uit"
-              placeholder="" inputmode="numeric"
-              oninput="updateVoortgang(${id})">
+            <input type="number" min="0" max="20" id="u${id}_uit"
+              value="${uUit}" placeholder="" inputmode="numeric"
+              style="${heeftUitslag ? 'border-color:#4caf7d;background:#e8f5ee;color:#111;' : ''}">
           </div>
-          <div class="team-uit ${nlUit ? 'nl' : ''}">${uit}</div>
+          <div class="team-naam">${uit}</div>
+          <button class="opslaan-btn ${heeftUitslag ? 'opgeslagen' : ''}"
+            id="btn-${id}" onclick="slaUitslagOp(${id})">
+            ${heeftUitslag ? '✓ Opgeslagen' : 'Opslaan'}
+          </button>
         </div>`;
     });
   });
   container.innerHTML = html;
 }
 
-function updateVoortgang(gewijzigdId) {
-  // Markeer rij als ingevuld (groen) als beide velden een waarde hebben
-  if (gewijzigdId) {
-    const t = document.getElementById('w' + gewijzigdId + '_thuis');
-    const u = document.getElementById('w' + gewijzigdId + '_uit');
-    const rij = document.getElementById('row-' + gewijzigdId);
-    if (rij) {
-      // FIX: t.value !== '' betekent ook 0 is ingevuld
-      if (t && u && t.value !== '' && u.value !== '') {
-        rij.classList.add('ingevuld');
-      } else {
-        rij.classList.remove('ingevuld');
-      }
-    }
+async function slaUitslagOp(id) {
+  const tEl = document.getElementById('u' + id + '_thuis');
+  const uEl = document.getElementById('u' + id + '_uit');
+  const btn = document.getElementById('btn-' + id);
+
+  if (tEl.value === '' || uEl.value === '') {
+    toonAlert('alert-wedstrijden', '⚠️ Vul beide scores in voor wedstrijd ' + id + '.', 'error');
+    return;
   }
 
-  // Tel ingevulde wedstrijden
-  let ingevuld = 0;
-  wedstrijden.forEach(w => {
-    const id = w.ID || w.id;
-    const t = document.getElementById('w' + id + '_thuis');
-    const u = document.getElementById('w' + id + '_uit');
-    // FIX: gebruik !== '' om ook 0 mee te tellen
-    if (t && u && t.value !== '' && u.value !== '') ingevuld++;
-  });
-  const totaal = wedstrijden.length;
-  const pct = totaal > 0 ? Math.round((ingevuld / totaal) * 100) : 0;
-  document.getElementById('voortgang-bar').style.width = pct + '%';
-  document.getElementById('voortgang-tekst').textContent = ingevuld + ' van ' + totaal + ' ingevuld';
+  btn.textContent = 'Bezig...';
+  btn.className = 'opslaan-btn bezig';
+  btn.disabled = true;
+
+  try {
+    const resp = await fetch(SCRIPT_URL, {
+      method: 'POST',
+      body: JSON.stringify({
+        actie: 'slaUitslagOp',
+        id: id,
+        uitslag_thuis: tEl.value,
+        uitslag_uit:   uEl.value,
+      }),
+    });
+    const result = await resp.json();
+
+    if (result.success) {
+      btn.textContent = '✓ Opgeslagen';
+      btn.className = 'opslaan-btn opgeslagen';
+      btn.disabled = false;
+      tEl.style.borderColor = '#4caf7d';
+      tEl.style.background  = '#e8f5ee';
+      tEl.style.color       = '#111';
+      uEl.style.borderColor = '#4caf7d';
+      uEl.style.background  = '#e8f5ee';
+      uEl.style.color       = '#111';
+      toonAlert('alert-wedstrijden', '✅ Uitslag wedstrijd ' + id + ' opgeslagen!', 'success');
+    } else {
+      toonAlert('alert-wedstrijden', '❌ Fout: ' + (result.error || 'Onbekende fout'), 'error');
+      btn.textContent = 'Opslaan';
+      btn.className = 'opslaan-btn';
+      btn.disabled = false;
+    }
+  } catch (e) {
+    toonAlert('alert-wedstrijden', '❌ Verbindingsfout. Probeer opnieuw.', 'error');
+    btn.textContent = 'Opslaan';
+    btn.className = 'opslaan-btn';
+    btn.disabled = false;
+  }
 }
 
-// ===================== STAP 2 → 3 =====================
-function naarStap3() {
-  naarStap(3);
+// ===================== RONDES =====================
+async function laadRondes() {
+  // Laad bestaande rondedata uit Google Sheets
+  try {
+    const resp = await fetch(SCRIPT_URL + '?actie=getRondes');
+    const data = await resp.json();
+
+    // Bouw rondeSelectie op uit de data
+    rondeSelectie = {};
+    if (Array.isArray(data)) {
+      data.forEach(r => {
+        const ronde = (r.Ronde || '').toString().trim().toLowerCase();
+        const land  = (r.Land  || '').toString().trim().toUpperCase();
+        if (ronde && land) {
+          if (!rondeSelectie[ronde]) rondeSelectie[ronde] = new Set();
+          rondeSelectie[ronde].add(land);
+        }
+      });
+    }
+  } catch (e) {
+    // Bij fout: lege selectie, gewoon doorgaan
+    rondeSelectie = {};
+  }
+
   renderRondes();
 }
 
-const LANDEN = [
-  'ALGERIJE','ARGENTINIË','AUSTRALIË','BELGIË','BOSNIË EN HERZ.',
-  'BRAZILIË','CANADA','COLOMBIA','CONGO','CURAÇAO',
-  'DUITSLAND','ECUADOR','EGYPTE','ENGELAND','FRANKRIJK',
-  'GHANA','HAÏTI','IRAN','IRAK','IVOORKUST',
-  'JAPAN','JORDANIË','KAAPVERDIË','KROATIË','MAROKKO',
-  'MEXICO','NEDERLAND','NIEUW-ZEELAND','NOORWEGEN','OEZBEKISTAN',
-  'OOSTENRIJK','PANAMA','PARAGUAY','PORTUGAL','QATAR',
-  'SAOEDI-ARABIË','SCHOTLAND','SENEGAL','SPANJE','TSJECHIË',
-  'TUNESIË','TURKIJE','URUGUAY','VERENIGDE STATEN','ZWEDEN',
-  'ZWITSERLAND','ZUID-AFRIKA','ZUID-KOREA'
-].sort();
-
-function maakDropdown(id, placeholder) {
-  let html = `<select id="${id}" style="width:100%;background:#111;border:1px solid #444;border-radius:6px;color:var(--licht);padding:8px 10px;font-size:0.85rem;font-family:'Source Sans 3',sans-serif;">`;
-  html += `<option value="">— ${placeholder} —</option>`;
-  LANDEN.forEach(l => { html += `<option value="${l}">${l}</option>`; });
-  html += '</select>';
-  return html;
-}
-
 function renderRondes() {
-  const configs = [
-    { id: 'r16-grid', prefix: 'r16_', count: 32, label: 'Kies land' },
-    { id: 'r8-grid',  prefix: 'r8_',  count: 16, label: 'Kies land' },
-    { id: 'kw-grid',  prefix: 'kw',   count: 8,  label: 'Kies land' },
-    { id: 'hf-grid',  prefix: 'hf',   count: 4,  label: 'Kies land' },
-    { id: 'fin-grid', prefix: 'fin',  count: 2,  label: 'Kies finalist' },
-  ];
-  configs.forEach(c => {
-    const grid = document.getElementById(c.id);
-    if (!grid) return;
+  RONDES.forEach(ronde => {
+    const container = document.getElementById(ronde.id);
+    if (!container) return;
+
+    const geselecteerd = rondeSelectie[ronde.code] || new Set();
     let html = '';
-    for (let i = 1; i <= c.count; i++) {
-      html += maakDropdown(c.prefix + i, c.label);
-    }
-    grid.innerHTML = html;
+
+    LANDEN.forEach(land => {
+      const isGeselecteerd = geselecteerd.has(land);
+      html += `
+        <label class="land-checkbox ${isGeselecteerd ? 'geselecteerd' : ''}"
+          id="label-${ronde.code}-${land.replace(/[^a-zA-Z]/g, '')}">
+          <input type="checkbox"
+            data-ronde="${ronde.code}"
+            data-land="${land}"
+            ${isGeselecteerd ? 'checked' : ''}
+            onchange="toggleLand(this, '${ronde.code}', '${land}', ${ronde.max})">
+          ${land}
+        </label>`;
+    });
+
+    container.innerHTML = html;
   });
-  const winGrid = document.getElementById('win-grid');
-  if (winGrid) {
-    winGrid.style.gridTemplateColumns = '1fr';
-    winGrid.innerHTML = maakDropdown('winnaar', 'Kies de winnaar');
+}
+
+function toggleLand(checkbox, ronde, land, max) {
+  if (!rondeSelectie[ronde]) rondeSelectie[ronde] = new Set();
+
+  const labelId = 'label-' + ronde + '-' + land.replace(/[^a-zA-Z]/g, '');
+  const label = document.getElementById(labelId);
+
+  if (checkbox.checked) {
+    // Check of max bereikt is
+    if (rondeSelectie[ronde].size >= max) {
+      checkbox.checked = false;
+      toonAlert('alert-rondes',
+        `⚠️ Je kunt maximaal ${max} land${max > 1 ? 'en' : ''} selecteren voor deze ronde.`,
+        'error');
+      return;
+    }
+    rondeSelectie[ronde].add(land);
+    if (label) label.classList.add('geselecteerd');
+  } else {
+    rondeSelectie[ronde].delete(land);
+    if (label) label.classList.remove('geselecteerd');
   }
+
+  verbergAlert('alert-rondes');
 }
 
-// ===================== STAP 3 → 4 =====================
-async function naarStap4() {
-  naarStap(4);
-  if (bonusvragen.length === 0) await laadBonusvragen();
+async function slaRondesOp() {
+  const btn = document.getElementById('btn-rondes-opslaan');
+  btn.disabled = true;
+  btn.textContent = '⏳ Opslaan...';
+  verbergAlert('alert-rondes');
+
+  // Bouw array van ronde+land combinaties
+  const rondeData = [];
+  RONDES.forEach(ronde => {
+    const landen = rondeSelectie[ronde.code] || new Set();
+    landen.forEach(land => {
+      rondeData.push({ ronde: ronde.code, land: land });
+    });
+  });
+
+  try {
+    const resp = await fetch(SCRIPT_URL, {
+      method: 'POST',
+      body: JSON.stringify({
+        actie: 'slaRondesOp',
+        rondes: rondeData,
+      }),
+    });
+    const result = await resp.json();
+
+    if (result.success) {
+      toonAlert('alert-rondes',
+        '✅ Rondes opgeslagen! Vergeet niet de puntentelling te herberekenen.', 'success');
+    } else {
+      toonAlert('alert-rondes', '❌ Fout: ' + (result.error || 'Onbekende fout'), 'error');
+    }
+  } catch (e) {
+    toonAlert('alert-rondes', '❌ Verbindingsfout. Probeer opnieuw.', 'error');
+  }
+
+  btn.disabled = false;
+  btn.textContent = '💾 Rondes opslaan';
 }
 
-async function laadBonusvragen() {
+// ===================== BONUS =====================
+async function laadBonus() {
   try {
     const resp = await fetch(SCRIPT_URL + '?actie=getBonusvragen');
     bonusvragen = await resp.json();
@@ -1024,157 +860,175 @@ function renderBonus() {
   const container = document.getElementById('bonus-container');
   let html = '';
   bonusvragen.forEach((v, i) => {
-    const id    = v.ID   || v.id   || (i + 1);
-    const vraag = v.Vraag || v.vraag || v.VRAAG || '';
+    const id    = v.ID    || v.id    || (i + 1);
+    const vraag = v.Vraag || v.vraag || '';
+    const antw  = v.Antwoord || v.antwoord || '';
     html += `
-      <div class="bonus-item">
-        <div class="bonus-vraag">Vraag ${id}: ${vraag}</div>
-        <input type="text" id="b${id}" placeholder="Jouw antwoord...">
+      <div class="bonus-rij">
+        <div class="bonus-vraag-tekst">Vraag ${id}: ${vraag}</div>
+        <div class="bonus-antwoord-rij">
+          <input type="text" id="ba${id}" value="${antw}" placeholder="Officieel antwoord...">
+          <button class="opslaan-btn" id="bbtn-${id}" onclick="slaBonusAntwoordOp(${id})">Opslaan</button>
+        </div>
       </div>`;
   });
   container.innerHTML = html;
 }
 
-// ===================== VERSTUUR =====================
-async function verstuurVoorspelling() {
-  const btn = event.target;
-  btn.disabled = true;
-  btn.textContent = 'Bezig met opslaan...';
+async function slaBonusAntwoordOp(id) {
+  const el  = document.getElementById('ba' + id);
+  const btn = document.getElementById('bbtn-' + id);
 
-  const naam = document.getElementById('inp-naam').value.trim();
-
-  // Extra veiligheidscheck: naam mag niet leeg zijn
-  if (!naam) {
-    toonAlert('alert-bonus', '⚠️ Geen naam gevonden. Ga terug naar stap 1.', 'error');
-    btn.disabled = false;
-    btn.textContent = '✅ Inzenden!';
+  if (!el.value.trim()) {
+    toonAlert('alert-bonus', '⚠️ Vul een antwoord in voor vraag ' + id + '.', 'error');
     return;
   }
 
-  const data = {
-    actie: 'submitVoorspelling',
-    naam: naam,
-    telefoon: document.getElementById('inp-telefoon').value.trim(),
-    email: document.getElementById('inp-email').value.trim(),
-  };
-
-  // Wedstrijden — FIX: ook 0 wordt opgeslagen
-  wedstrijden.forEach(w => {
-    const id = w.ID || w.id;
-    const t = document.getElementById('w' + id + '_thuis');
-    const u = document.getElementById('w' + id + '_uit');
-    // FIX: t.value !== '' zodat 0 ook meegenomen wordt
-    if (t && u && t.value !== '' && u.value !== '') {
-      data['w' + id] = t.value + '-' + u.value;
-    } else {
-      data['w' + id] = '';
-    }
-  });
-
-  // Rondes
-  const rondeConfigs = [
-    { prefix: 'r16_', count: 32 },
-    { prefix: 'r8_',  count: 16 },
-    { prefix: 'kw',   count: 8  },
-    { prefix: 'hf',   count: 4  },
-    { prefix: 'fin',  count: 2  },
-  ];
-  rondeConfigs.forEach(c => {
-    for (let i = 1; i <= c.count; i++) {
-      const el = document.getElementById(c.prefix + i);
-      data[c.prefix + i] = el ? el.value.trim() : '';
-    }
-  });
-
-  // Winnaar
-  const winEl = document.getElementById('winnaar');
-  data['winnaar'] = winEl ? winEl.value.trim() : '';
-
-  // Bonus
-  bonusvragen.forEach((v, i) => {
-    const id = v.ID || v.id || (i + 1);
-    const el = document.getElementById('b' + id);
-    data['b' + id] = el ? el.value.trim() : '';
-  });
+  btn.textContent = 'Bezig...';
+  btn.className = 'opslaan-btn bezig';
+  btn.disabled = true;
 
   try {
     const resp = await fetch(SCRIPT_URL, {
       method: 'POST',
-      body: JSON.stringify(data),
+      body: JSON.stringify({
+        actie: 'slaBonusAntwoordOp',
+        id: id,
+        antwoord: el.value.trim(),
+      }),
     });
     const result = await resp.json();
 
     if (result.success) {
-      document.getElementById('klaar-naam').textContent = naam + '!';
-      // Toon emailbevestiging als er een emailadres is
-      const email = document.getElementById('inp-email').value.trim();
-      if (email) {
-        document.getElementById('klaar-email-adres').textContent = email;
-        document.getElementById('klaar-email-melding').style.display = 'block';
-      }
-      naarStap(5);
-      document.getElementById('stap-indicator').style.display = 'none';
-    } else {
-      // FIX: toon foutmelding van het Apps Script (bijv. "naam bestaat al")
-      toonAlert('alert-bonus', '⚠️ ' + (result.error || 'Er ging iets mis. Probeer opnieuw.'), 'error');
+      btn.textContent = '✓ Opgeslagen';
+      btn.className = 'opslaan-btn opgeslagen';
       btn.disabled = false;
-      btn.textContent = '✅ Inzenden!';
+      toonAlert('alert-bonus', '✅ Antwoord voor vraag ' + id + ' opgeslagen!', 'success');
+    } else {
+      toonAlert('alert-bonus', '❌ Fout: ' + (result.error || 'Onbekende fout'), 'error');
+      btn.textContent = 'Opslaan';
+      btn.className = 'opslaan-btn';
+      btn.disabled = false;
     }
   } catch (e) {
-    toonAlert('alert-bonus', '⚠️ Verbindingsfout. Controleer je internet en probeer opnieuw.', 'error');
+    toonAlert('alert-bonus', '❌ Verbindingsfout. Probeer opnieuw.', 'error');
+    btn.textContent = 'Opslaan';
+    btn.className = 'opslaan-btn';
     btn.disabled = false;
-    btn.textContent = '✅ Inzenden!';
   }
 }
 
-// ===================== RANGLIJST =====================
-async function laadRanglijst() {
-  const container = document.getElementById('ranglijst-container');
-  container.innerHTML = '<div class="loading"><div class="spinner"></div>Laden...</div>';
+// ===================== PUNTENTELLING =====================
+async function herbereken() {
+  const btn = document.getElementById('btn-herbereken');
+  btn.disabled = true;
+  btn.textContent = '⏳ Bezig met berekenen...';
+  verbergAlert('alert-punten');
+
   try {
-    const resp = await fetch(SCRIPT_URL + '?actie=getRanglijst');
-    const data = await resp.json();
-
-    if (!data || data.length === 0) {
-      container.innerHTML = `
-        <div class="wacht-scherm">
-          <div style="font-size:2rem">⏳</div>
-          <p style="margin-top:12px;">De ranglijst is nog leeg.<br>Zodra wedstrijden gespeeld zijn verschijnen hier de scores!</p>
-        </div>`;
-      return;
-    }
-
-    let html = `
-      <table class="rang-table">
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Naam</th>
-            <th>Punten</th>
-          </tr>
-        </thead>
-        <tbody>`;
-
-    data.forEach((r, i) => {
-      const klasse = i === 0 ? 'rang-1' : i === 1 ? 'rang-2' : i === 2 ? 'rang-3' : '';
-      const medal  = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : '';
-      html += `
-        <tr class="${klasse}">
-          <td class="rang-nr">${medal || (i+1)}</td>
-          <td>${r.naam}</td>
-          <td>
-            <span class="punten-badge">${r.totaal}</span>
-            <div class="sub-punten">W:${r.punten_wedstrijden} R:${r.punten_rondes} B:${r.punten_bonus}</div>
-          </td>
-        </tr>`;
+    const resp = await fetch(SCRIPT_URL, {
+      method: 'POST',
+      body: JSON.stringify({ actie: 'herbereken' }),
     });
+    const result = await resp.json();
 
-    html += '</tbody></table>';
-    container.innerHTML = html;
-
+    if (result.success) {
+      toonAlert('alert-punten',
+        '✅ Puntentelling bijgewerkt! ' + (result.bericht || ''), 'success');
+      laadStats();
+    } else {
+      toonAlert('alert-punten', '❌ Fout: ' + (result.error || 'Onbekende fout'), 'error');
+    }
   } catch (e) {
-    container.innerHTML = '<div class="alert alert-error show">Fout bij laden ranglijst.</div>';
+    toonAlert('alert-punten', '❌ Verbindingsfout. Probeer opnieuw.', 'error');
   }
+
+  btn.disabled = false;
+  btn.textContent = '🔄 Puntentelling herberekenen';
+}
+
+async function laadStats() {
+  try {
+    const resp = await fetch(SCRIPT_URL + '?actie=getStats');
+    const data = await resp.json();
+    document.getElementById('stat-deelnemers').textContent  = data.aantalDeelnemers  || '—';
+    document.getElementById('stat-wedstrijden').textContent = data.wedstrijden || '—';
+    document.getElementById('stat-hoogste').textContent     = data.hoogste     || '—';
+    document.getElementById('stat-update').textContent      = data.update      || new Date().toLocaleString('nl-NL');
+
+    // Deelnemerslijst tonen als die er is
+    if (data.deelnemers && data.deelnemers.length > 0) {
+      renderDeelnemers(data.deelnemers);
+    }
+  } catch (e) {
+    // Stats niet kritisch, stil falen
+  }
+}
+
+function renderDeelnemers(deelnemers) {
+  const container = document.getElementById('deelnemers-container');
+  if (!container) return;
+
+  let html = `
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; flex-wrap:wrap; gap:8px;">
+      <h3 style="margin:0;">Ingeschreven deelnemers (${deelnemers.length})</h3>
+      <button onclick="exporteerEmailsCSV()" style="padding:7px 14px; background:var(--goud); color:var(--donker); border:none; border-radius:6px; cursor:pointer; font-family:'Oswald',sans-serif; font-size:0.8rem; letter-spacing:1px; text-transform:uppercase; font-weight:bold;">
+        📥 Download CSV
+      </button>
+    </div>
+    <div style="overflow-x:auto;">
+    <table style="width:100%; border-collapse:collapse; font-size:0.85rem;">
+      <thead>
+        <tr style="border-bottom:2px solid var(--goud);">
+          <th style="padding:8px 10px; text-align:left; color:var(--goud); white-space:nowrap;">#</th>
+          <th style="padding:8px 10px; text-align:left; color:var(--goud); white-space:nowrap;">Naam</th>
+          <th style="padding:8px 10px; text-align:left; color:var(--goud); white-space:nowrap;">E-mail</th>
+          <th style="padding:8px 10px; text-align:left; color:var(--goud); white-space:nowrap;">Telefoon</th>
+          <th style="padding:8px 10px; text-align:left; color:var(--goud); white-space:nowrap;">Inzending</th>
+        </tr>
+      </thead>
+      <tbody>`;
+
+  deelnemers.forEach(function(d, i) {
+    const achtergrond = i % 2 === 0 ? 'background:#1e140a;' : 'background:#241a0e;';
+    html += `
+      <tr style="${achtergrond}">
+        <td style="padding:7px 10px; color:var(--grijs);">${i + 1}</td>
+        <td style="padding:7px 10px; font-weight:600; color:var(--licht);">${d.naam || ''}</td>
+        <td style="padding:7px 10px;">
+          ${d.email
+            ? `<a href="mailto:${d.email}" style="color:var(--goud2); text-decoration:none;">${d.email}</a>`
+            : `<span style="color:#555; font-style:italic;">—</span>`}
+        </td>
+        <td style="padding:7px 10px; color:var(--grijs);">${d.telefoon || '—'}</td>
+        <td style="padding:7px 10px; color:var(--grijs); font-size:0.78rem;">${d.timestamp || ''}</td>
+      </tr>`;
+  });
+
+  html += '</tbody></table></div>';
+  container.innerHTML = html;
+
+  // Sla op voor CSV export
+  window._deelnemerData = deelnemers;
+}
+
+function exporteerEmailsCSV() {
+  const deelnemers = window._deelnemerData || [];
+  const rijen = ['Naam,E-mail,Telefoon'];
+  deelnemers.forEach(function(d) {
+    rijen.push(
+      '"' + (d.naam     || '').replace(/"/g, '""') + '",' +
+      '"' + (d.email    || '').replace(/"/g, '""') + '",' +
+      '"' + (d.telefoon || '').replace(/"/g, '""') + '"'
+    );
+  });
+  const blob = new Blob([rijen.join('\n')], { type: 'text/csv;charset=utf-8;' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href     = url;
+  a.download = 'rembrandt_wk_deelnemers.csv';
+  a.click();
+  URL.revokeObjectURL(url);
 }
 
 // ===================== HELPERS =====================
@@ -1185,15 +1039,10 @@ function toonAlert(id, msg, type) {
   el.className = 'alert alert-' + type + ' show';
   el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
-
 function verbergAlert(id) {
   const el = document.getElementById(id);
-  if (!el) return;
-  el.className = 'alert';
+  if (el) el.className = 'alert';
 }
-
-// ===================== INIT =====================
-updateStapIndicator(1);
 </script>
 </body>
 </html>
