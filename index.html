@@ -332,24 +332,32 @@
   }
   .bonus-item input:focus { outline: none; border-color: var(--goud); }
 
+  .progress-sticky {
+    position: sticky;
+    top: 0;
+    z-index: 90;
+    background: var(--donker2);
+    border-bottom: 1px solid #333;
+    padding: 6px 16px 8px;
+    margin: -20px -20px 16px -20px;
+  }
   .progress-bar {
-    height: 4px;
+    height: 6px;
     background: #333;
-    border-radius: 2px;
-    margin: 8px 0 4px;
+    border-radius: 3px;
+    margin: 4px 0 3px;
     overflow: hidden;
   }
   .progress-fill {
     height: 100%;
     background: var(--goud);
-    border-radius: 2px;
+    border-radius: 3px;
     transition: width 0.3s;
   }
   .progress-text {
     font-size: 0.75rem;
     color: var(--grijs);
     text-align: right;
-    margin-bottom: 16px;
   }
 
   .sub-punten { font-size: 0.75rem; color: var(--grijs); }
@@ -636,8 +644,10 @@
         Juiste uitslag: <strong>10 punten</strong><br>
         <strong>Tip:</strong> Laat een veld leeg als je geen uitslag wil invullen. Vul <strong>0</strong> in als je 0 doelpunten verwacht.
       </div>
-      <div class="progress-bar"><div class="progress-fill" id="voortgang-bar" style="width:0%"></div></div>
-      <div class="progress-text" id="voortgang-tekst">0 van 72 ingevuld</div>
+      <div class="progress-sticky">
+        <div class="progress-text" id="voortgang-tekst">0 van 72 ingevuld</div>
+        <div class="progress-bar"><div class="progress-fill" id="voortgang-bar" style="width:0%"></div></div>
+      </div>
       <div id="alert-wedstrijden" class="alert"></div>
       <div id="wedstrijden-container">
         <div class="loading"><div class="spinner"></div>Wedstrijden laden...</div>
