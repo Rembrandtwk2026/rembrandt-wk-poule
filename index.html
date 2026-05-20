@@ -819,7 +819,7 @@ async function naarStap2() {
     // CHECK 1: naam al ingediend?
     const respNaam = await fetch(SCRIPT_URL + '?actie=checkNaam&naam=' + encodeURIComponent(naam));
     const resultNaam = await respNaam.json();
-    if (resultNaam.bestaat) {
+    if (!resultNaam.beschikbaar) {
       toonAlert('alert-gegevens',
         '⚠️ De naam "' + naam + '" is al ingediend. Heb je al eerder ingevuld? Neem contact op met de Rembrandt Pub.',
         'error');
@@ -867,7 +867,9 @@ async function naarStap2() {
 async function laadWedstrijden() {
   try {
     const resp = await fetch(SCRIPT_URL + '?actie=getWedstrijden');
-    wedstrijden = await resp.json();
+    const data = await resp.json();
+    wedstrijden = data.wedstrijden || data || [];
+    if (wedstrijden.length === 0) throw new Error('Geen wedstrijden');
     renderWedstrijden();
   } catch (e) {
     document.getElementById('wedstrijden-container').innerHTML =
@@ -1012,7 +1014,8 @@ async function naarStap4() {
 async function laadBonusvragen() {
   try {
     const resp = await fetch(SCRIPT_URL + '?actie=getBonusvragen');
-    bonusvragen = await resp.json();
+    const data = await resp.json();
+    bonusvragen = data.vragen || data || [];
     renderBonus();
   } catch (e) {
     document.getElementById('bonus-container').innerHTML =
@@ -1133,7 +1136,8 @@ async function laadRanglijst() {
   container.innerHTML = '<div class="loading"><div class="spinner"></div>Laden...</div>';
   try {
     const resp = await fetch(SCRIPT_URL + '?actie=getRanglijst');
-    const data = await resp.json();
+    const json = await resp.json();
+    const data = json.ranglijst || json || [];
 
     if (!data || data.length === 0) {
       container.innerHTML = `
