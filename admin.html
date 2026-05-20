@@ -351,6 +351,52 @@
   }
   .punten-uitleg strong { color: var(--licht); }
 
+  .deelnemer-tabel { width: 100%; border-collapse: collapse; margin-top: 8px; }
+  .deelnemer-tabel th {
+    font-family: 'Oswald', sans-serif;
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--grijs);
+    padding: 8px 8px;
+    text-align: left;
+    border-bottom: 2px solid var(--goud);
+  }
+  .deelnemer-tabel td { padding: 10px 8px; font-size: 0.9rem; border-bottom: 1px solid #222; }
+  .deelnemer-tabel tr:hover td { background: #2a2a2a; }
+  .betaald-toggle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+  }
+  .toggle-switch {
+    position: relative;
+    width: 44px;
+    height: 24px;
+    background: #444;
+    border-radius: 12px;
+    transition: background 0.2s;
+    border: none;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+  .toggle-switch::after {
+    content: '';
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    background: white;
+    border-radius: 50%;
+    top: 3px;
+    left: 3px;
+    transition: left 0.2s;
+  }
+  .toggle-switch.aan { background: var(--groen); }
+  .toggle-switch.aan::after { left: 23px; }
+  .betaald-label { font-size: 0.85rem; color: var(--grijs); }
+  .betaald-label.aan { color: var(--groen); font-weight: 600; }
+
   .rang-table { width: 100%; border-collapse: collapse; }
   .rang-table th {
     font-family: 'Oswald', sans-serif;
@@ -575,8 +621,19 @@
           ↻ Stats vernieuwen
         </button>
 
-        <!-- Deelnemerslijst met email -->
-        <div id="deelnemers-container" style="margin-top:20px;"></div>
+        <!-- Deelnemerslijst met betaald toggle -->
+        <div style="margin-top:24px;">
+          <h3 style="font-family:'Oswald',sans-serif; color:var(--goud); letter-spacing:1px; margin-bottom:4px;">
+            💶 Betalingen bijhouden
+          </h3>
+          <div class="info-box" style="margin-bottom:12px;">
+            Zet de toggle op <strong>Betaald</strong> zodra een deelnemer heeft betaald. Alleen betaalde deelnemers verschijnen in de ranglijst.
+          </div>
+          <button class="btn" style="background:#333; margin-top:0; margin-bottom:12px; width:auto; padding:8px 16px; font-size:0.85rem;" onclick="laadDeelnemers()">↻ Vernieuwen</button>
+          <div id="deelnemers-container">
+            <div class="loading"><div class="spinner"></div>Laden...</div>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -656,7 +713,7 @@ function toonTab(naam, knop) {
   knop.classList.add('active');
 
   if (naam === 'bonus' && bonusvragen.length === 0) laadBonus();
-  if (naam === 'puntentelling') laadStats();
+  if (naam === 'puntentelling') { laadStats(); laadDeelnemers(); }
   if (naam === 'rondes') laadRondes();
   if (naam === 'ranglijst') laadRanglijst();
 }
@@ -1071,6 +1128,81 @@ function exporteerEmailsCSV() {
   a.download = 'rembrandt_wk_deelnemers.csv';
   a.click();
   URL.revokeObjectURL(url);
+}
+
+// ===================== BETALINGEN =====================
+async function laadDeelnemers() {
+  const container = document.getElementById('deelnemers-container');
+  if (!container) return;
+  container.innerHTML = '<div class="loading"><div class="spinner"></div>Laden...</div>';
+  try {
+    const resp = await fetch(SCRIPT_URL + '?actie=getDeelnemers');
+    const json = await resp.json();
+    const lijst = json.deelnemers || [];
+
+    if (lijst.length === 0) {
+      container.innerHTML = '<div class="alert alert-info show">Nog geen deelnemers.</div>';
+      return;
+    }
+
+    let html = `<table class="deelnemer-tabel">
+      <thead><tr>
+        <th>#</th>
+        <th>Naam</th>
+        <th>Email</th>
+        <th>Telefoon</th>
+        <th>Betaald</th>
+      </tr></thead><tbody>`;
+
+    lijst.forEach((d, i) => {
+      const aan = d.betaald;
+      html += `<tr>
+        <td style="color:var(--grijs);">${i + 1}</td>
+        <td style="font-weight:600;">${d.naam}</td>
+        <td style="color:var(--grijs); font-size:0.82rem;">${d.email}</td>
+        <td style="color:var(--grijs); font-size:0.82rem;">${d.telefoon || '—'}</td>
+        <td>
+          <div class="betaald-toggle" onclick="toggleBetaald(${d.id}, this)">
+            <button class="toggle-switch ${aan ? 'aan' : ''}" id="toggle-${d.id}"></button>
+            <span class="betaald-label ${aan ? 'aan' : ''}" id="label-${d.id}">${aan ? 'Betaald ✓' : 'Niet betaald'}</span>
+          </div>
+        </td>
+      </tr>`;
+    });
+
+    html += '</tbody></table>';
+    container.innerHTML = html;
+
+  } catch(e) {
+    container.innerHTML = '<div class="alert alert-error show">Fout bij laden deelnemers.</div>';
+  }
+}
+
+async function toggleBetaald(id, el) {
+  const toggle = document.getElementById('toggle-' + id);
+  const label  = document.getElementById('label-' + id);
+  const isAan  = toggle.classList.contains('aan');
+  const nieuw  = !isAan;
+
+  // UI direct bijwerken
+  toggle.classList.toggle('aan', nieuw);
+  label.classList.toggle('aan', nieuw);
+  label.textContent = nieuw ? 'Betaald ✓' : 'Niet betaald';
+
+  try {
+    const resp = await fetch(SCRIPT_URL, {
+      method: 'POST',
+      body: JSON.stringify({ actie: 'setBetaald', id: id, betaald: nieuw })
+    });
+    const json = await resp.json();
+    if (!json.succes) throw new Error('Fout');
+  } catch(e) {
+    // Terugdraaien bij fout
+    toggle.classList.toggle('aan', isAan);
+    label.classList.toggle('aan', isAan);
+    label.textContent = isAan ? 'Betaald ✓' : 'Niet betaald';
+    alert('Fout bij opslaan. Probeer opnieuw.');
+  }
 }
 
 // ===================== RANGLIJST =====================
