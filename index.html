@@ -171,13 +171,6 @@
     color: #1a1208 !important;
   }
 
-  .landen-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
-    margin-top: 8px;
-  }
-
   .btn {
     display: block;
     width: 100%;
@@ -387,7 +380,7 @@
 
   @media (max-width: 400px) {
     .team-thuis, .team-uit { font-size: 0.75rem; }
-    .landen-grid { grid-template-columns: 1fr; }
+    .landen-checkboxes { grid-template-columns: 1fr 1fr; }
   }
 
   html { scroll-behavior: smooth; }
@@ -433,6 +426,61 @@
     font-family: 'Oswald', sans-serif;
     letter-spacing: 0.5px;
   }
+
+  /* Checkbox landen */
+  .landen-checkboxes {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 7px;
+    margin-top: 10px;
+  }
+  .land-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 10px;
+    background: #111;
+    border: 1px solid #444;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-size: 0.82rem;
+    user-select: none;
+  }
+  .land-checkbox:hover { border-color: var(--goud); }
+  .land-checkbox.geselecteerd {
+    background: #1a3d2a;
+    border-color: #4caf7d;
+    color: #7de0a0;
+  }
+  .land-checkbox.uitgeschakeld {
+    opacity: 0.3;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+  .land-checkbox input[type="checkbox"] {
+    width: 16px !important;
+    height: 16px;
+    accent-color: #4caf7d;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+
+  .ronde-teller {
+    font-size: 0.8rem;
+    color: var(--grijs);
+    margin-top: 8px;
+    text-align: right;
+  }
+  .ronde-teller span {
+    font-family: 'Oswald', sans-serif;
+    font-size: 1rem;
+    color: var(--goud2);
+  }
+
+  /* Sub-rondes binnen stap 3 */
+  .sub-ronde { display: none; }
+  .sub-ronde.active { display: block; }
 
   /* FIX: naam-check loader */
   .naam-check-bezig {
@@ -538,81 +586,125 @@
     <div class="card">
       <h2>🏆 Doorgestroomde landen</h2>
       <div class="info-box">
-        Welke landen komen er door naar elke ronde van het toernooi?<br>
-        Kies per ronde de landen die jij verwacht. Hoe verder een land komt dat jij goed voorspeld hebt, hoe meer punten!
+        Kies per ronde de landen die jij verwacht. Elk land maar <strong>1x</strong> per ronde kiezen.<br>
+        De volgende ronde toont alleen jouw gekozen landen. Hoe verder een land komt, hoe meer punten!
       </div>
       <div id="alert-rondes" class="alert"></div>
 
-      <div class="ronde-sectie">
-        <div class="ronde-header">
-          <span class="ronde-icon">🔵</span>
-          <div>
-            <div class="ronde-titel">16e Finales</div>
-            <div class="ronde-uitleg">Welke <strong>32 landen</strong> komen door uit de groepsfase? <span class="pnt-badge">15 pnt per land</span></div>
+      <!-- SUB-RONDE: 16e Finales -->
+      <div class="sub-ronde active" id="sub-r16">
+        <div class="ronde-sectie">
+          <div class="ronde-header">
+            <span class="ronde-icon">🔵</span>
+            <div>
+              <div class="ronde-titel">16e Finales</div>
+              <div class="ronde-uitleg">Welke <strong>32 landen</strong> komen door uit de groepsfase? <span class="pnt-badge">15 pnt per land</span></div>
+            </div>
           </div>
+          <div class="landen-checkboxes" id="check-r16"></div>
+          <div class="ronde-teller">Gekozen: <span id="teller-r16">0</span> / 32</div>
         </div>
-        <div class="landen-grid" id="r16-grid"></div>
+        <div style="display:flex; gap:8px; margin-top:12px;">
+          <button class="btn" style="background:#333; flex:1" onclick="naarStap(2)">← Terug</button>
+          <button class="btn" style="flex:2" onclick="naarSubRonde('r8')">Volgende: 8e Finales →</button>
+        </div>
       </div>
 
-      <div class="ronde-sectie">
-        <div class="ronde-header">
-          <span class="ronde-icon">🟡</span>
-          <div>
-            <div class="ronde-titel">8e Finales</div>
-            <div class="ronde-uitleg">Welke <strong>16 landen</strong> gaan door? <span class="pnt-badge">25 pnt per land</span></div>
+      <!-- SUB-RONDE: 8e Finales -->
+      <div class="sub-ronde" id="sub-r8">
+        <div class="ronde-sectie">
+          <div class="ronde-header">
+            <span class="ronde-icon">🟡</span>
+            <div>
+              <div class="ronde-titel">8e Finales</div>
+              <div class="ronde-uitleg">Welke <strong>16 landen</strong> gaan door? <span class="pnt-badge">25 pnt per land</span></div>
+            </div>
           </div>
+          <div class="landen-checkboxes" id="check-r8"></div>
+          <div class="ronde-teller">Gekozen: <span id="teller-r8">0</span> / 16</div>
         </div>
-        <div class="landen-grid" id="r8-grid"></div>
+        <div style="display:flex; gap:8px; margin-top:12px;">
+          <button class="btn" style="background:#333; flex:1" onclick="naarSubRonde('r16')">← Terug</button>
+          <button class="btn" style="flex:2" onclick="naarSubRonde('kw')">Volgende: Kwartfinales →</button>
+        </div>
       </div>
 
-      <div class="ronde-sectie">
-        <div class="ronde-header">
-          <span class="ronde-icon">🟠</span>
-          <div>
-            <div class="ronde-titel">Kwartfinales</div>
-            <div class="ronde-uitleg">Welke <strong>8 landen</strong> bereiken de kwartfinale? <span class="pnt-badge">50 pnt per land</span></div>
+      <!-- SUB-RONDE: Kwartfinales -->
+      <div class="sub-ronde" id="sub-kw">
+        <div class="ronde-sectie">
+          <div class="ronde-header">
+            <span class="ronde-icon">🟠</span>
+            <div>
+              <div class="ronde-titel">Kwartfinales</div>
+              <div class="ronde-uitleg">Welke <strong>8 landen</strong> bereiken de kwartfinale? <span class="pnt-badge">50 pnt per land</span></div>
+            </div>
           </div>
+          <div class="landen-checkboxes" id="check-kw"></div>
+          <div class="ronde-teller">Gekozen: <span id="teller-kw">0</span> / 8</div>
         </div>
-        <div class="landen-grid" id="kw-grid"></div>
+        <div style="display:flex; gap:8px; margin-top:12px;">
+          <button class="btn" style="background:#333; flex:1" onclick="naarSubRonde('r8')">← Terug</button>
+          <button class="btn" style="flex:2" onclick="naarSubRonde('hf')">Volgende: Halve Finales →</button>
+        </div>
       </div>
 
-      <div class="ronde-sectie">
-        <div class="ronde-header">
-          <span class="ronde-icon">🔴</span>
-          <div>
-            <div class="ronde-titel">Halve Finales</div>
-            <div class="ronde-uitleg">Welke <strong>4 landen</strong> spelen de halve finale? <span class="pnt-badge">100 pnt per land</span></div>
+      <!-- SUB-RONDE: Halve Finales -->
+      <div class="sub-ronde" id="sub-hf">
+        <div class="ronde-sectie">
+          <div class="ronde-header">
+            <span class="ronde-icon">🔴</span>
+            <div>
+              <div class="ronde-titel">Halve Finales</div>
+              <div class="ronde-uitleg">Welke <strong>4 landen</strong> spelen de halve finale? <span class="pnt-badge">100 pnt per land</span></div>
+            </div>
           </div>
+          <div class="landen-checkboxes" id="check-hf"></div>
+          <div class="ronde-teller">Gekozen: <span id="teller-hf">0</span> / 4</div>
         </div>
-        <div class="landen-grid" id="hf-grid"></div>
+        <div style="display:flex; gap:8px; margin-top:12px;">
+          <button class="btn" style="background:#333; flex:1" onclick="naarSubRonde('kw')">← Terug</button>
+          <button class="btn" style="flex:2" onclick="naarSubRonde('fin')">Volgende: Finale →</button>
+        </div>
       </div>
 
-      <div class="ronde-sectie">
-        <div class="ronde-header">
-          <span class="ronde-icon">⭐</span>
-          <div>
-            <div class="ronde-titel">Finale</div>
-            <div class="ronde-uitleg">Welke <strong>2 landen</strong> spelen de finale? <span class="pnt-badge">150 pnt per land</span></div>
+      <!-- SUB-RONDE: Finale -->
+      <div class="sub-ronde" id="sub-fin">
+        <div class="ronde-sectie">
+          <div class="ronde-header">
+            <span class="ronde-icon">⭐</span>
+            <div>
+              <div class="ronde-titel">Finale</div>
+              <div class="ronde-uitleg">Welke <strong>2 landen</strong> spelen de finale? <span class="pnt-badge">150 pnt per land</span></div>
+            </div>
           </div>
+          <div class="landen-checkboxes" id="check-fin"></div>
+          <div class="ronde-teller">Gekozen: <span id="teller-fin">0</span> / 2</div>
         </div>
-        <div class="landen-grid" id="fin-grid"></div>
+        <div style="display:flex; gap:8px; margin-top:12px;">
+          <button class="btn" style="background:#333; flex:1" onclick="naarSubRonde('hf')">← Terug</button>
+          <button class="btn" style="flex:2" onclick="naarSubRonde('winnaar')">Volgende: Winnaar →</button>
+        </div>
       </div>
 
-      <div class="ronde-sectie">
-        <div class="ronde-header">
-          <span class="ronde-icon">🥇</span>
-          <div>
-            <div class="ronde-titel">Wereldkampioen</div>
-            <div class="ronde-uitleg">Welk land wordt <strong>wereldkampioen</strong>? <span class="pnt-badge">200 pnt</span></div>
+      <!-- SUB-RONDE: Winnaar -->
+      <div class="sub-ronde" id="sub-winnaar">
+        <div class="ronde-sectie">
+          <div class="ronde-header">
+            <span class="ronde-icon">🥇</span>
+            <div>
+              <div class="ronde-titel">Wereldkampioen</div>
+              <div class="ronde-uitleg">Welk land wordt <strong>wereldkampioen</strong>? <span class="pnt-badge">200 pnt</span></div>
+            </div>
           </div>
+          <div class="landen-checkboxes" id="check-winnaar"></div>
+          <div class="ronde-teller">Gekozen: <span id="teller-winnaar">0</span> / 1</div>
         </div>
-        <div class="landen-grid" id="win-grid"></div>
+        <div style="display:flex; gap:8px; margin-top:12px;">
+          <button class="btn" style="background:#333; flex:1" onclick="naarSubRonde('fin')">← Terug</button>
+          <button class="btn" style="flex:2" onclick="naarStap4()">Volgende: Bonusvragen →</button>
+        </div>
       </div>
 
-      <div style="display:flex; gap:8px; margin-top:16px;">
-        <button class="btn" style="background:#333; flex:1" onclick="naarStap(2)">← Terug</button>
-        <button class="btn" style="flex:2" onclick="naarStap4()">Volgende: Bonusvragen →</button>
-      </div>
     </div>
   </div>
 
@@ -957,7 +1049,7 @@ function updateVoortgang(gewijzigdId) {
 // ===================== STAP 2 → 3 =====================
 function naarStap3() {
   naarStap(3);
-  renderRondes();
+  renderSubRonde('r16');
 }
 
 const LANDEN = [
@@ -973,36 +1065,95 @@ const LANDEN = [
   'ZWITSERLAND','ZUID-AFRIKA','ZUID-KOREA'
 ].sort();
 
-function maakDropdown(id, placeholder) {
-  let html = `<select id="${id}" style="width:100%;background:#111;border:1px solid #444;border-radius:6px;color:var(--licht);padding:8px 10px;font-size:0.85rem;font-family:'Source Sans 3',sans-serif;">`;
-  html += `<option value="">— ${placeholder} —</option>`;
-  LANDEN.forEach(l => { html += `<option value="${l}">${l}</option>`; });
-  html += '</select>';
-  return html;
+// Rondes configuratie: code, max te kiezen, vorige ronde (bronlijst)
+const RONDE_CONFIG = {
+  r16:     { max: 32, bron: null,      teller: 'teller-r16',     container: 'check-r16'     },
+  r8:      { max: 16, bron: 'r16',     teller: 'teller-r8',      container: 'check-r8'      },
+  kw:      { max: 8,  bron: 'r8',      teller: 'teller-kw',      container: 'check-kw'      },
+  hf:      { max: 4,  bron: 'kw',      teller: 'teller-hf',      container: 'check-hf'      },
+  fin:     { max: 2,  bron: 'hf',      teller: 'teller-fin',     container: 'check-fin'     },
+  winnaar: { max: 1,  bron: 'fin',     teller: 'teller-winnaar', container: 'check-winnaar' },
+};
+
+// Opgeslagen selecties per ronde
+const rondeSelectie = { r16: new Set(), r8: new Set(), kw: new Set(), hf: new Set(), fin: new Set(), winnaar: new Set() };
+
+function renderSubRonde(code) {
+  const cfg       = RONDE_CONFIG[code];
+  const container = document.getElementById(cfg.container);
+  // Bronlijst: als er een vorige ronde is, gebruik die selectie; anders alle landen
+  const bronLijst = cfg.bron ? Array.from(rondeSelectie[cfg.bron]).sort() : LANDEN;
+
+  // Als de bronlijst leeg is (vorige ronde niets gekozen), waarschuw
+  if (cfg.bron && bronLijst.length === 0) {
+    container.innerHTML = '<div style="color:var(--grijs);font-size:0.9rem;padding:10px 0;">Geen landen geselecteerd in de vorige ronde.</div>';
+    updateTeller(code);
+    return;
+  }
+
+  // Verwijder landen uit huidige selectie die niet meer in de bronlijst zitten
+  rondeSelectie[code].forEach(land => {
+    if (!bronLijst.includes(land)) rondeSelectie[code].delete(land);
+  });
+
+  let html = '';
+  bronLijst.forEach(land => {
+    const geselecteerd = rondeSelectie[code].has(land);
+    const safeId = land.replace(/[^a-zA-Z]/g, '');
+    html += `
+      <label class="land-checkbox ${geselecteerd ? 'geselecteerd' : ''}" id="lbl-${code}-${safeId}">
+        <input type="checkbox"
+          data-ronde="${code}"
+          data-land="${land}"
+          ${geselecteerd ? 'checked' : ''}
+          onchange="toggleRondeLand(this, '${code}', '${land}')">
+        ${land}
+      </label>`;
+  });
+  container.innerHTML = html;
+  updateTeller(code);
 }
 
-function renderRondes() {
-  const configs = [
-    { id: 'r16-grid', prefix: 'r16_', count: 32, label: 'Kies land' },
-    { id: 'r8-grid',  prefix: 'r8_',  count: 16, label: 'Kies land' },
-    { id: 'kw-grid',  prefix: 'kw',   count: 8,  label: 'Kies land' },
-    { id: 'hf-grid',  prefix: 'hf',   count: 4,  label: 'Kies land' },
-    { id: 'fin-grid', prefix: 'fin',  count: 2,  label: 'Kies finalist' },
-  ];
-  configs.forEach(c => {
-    const grid = document.getElementById(c.id);
-    if (!grid) return;
-    let html = '';
-    for (let i = 1; i <= c.count; i++) {
-      html += maakDropdown(c.prefix + i, c.label);
+function toggleRondeLand(checkbox, code, land) {
+  const cfg   = RONDE_CONFIG[code];
+  const safeId = land.replace(/[^a-zA-Z]/g, '');
+  const label  = document.getElementById('lbl-' + code + '-' + safeId);
+
+  if (checkbox.checked) {
+    if (rondeSelectie[code].size >= cfg.max) {
+      // Max bereikt: vinkje terugzetten
+      checkbox.checked = false;
+      toonAlert('alert-rondes', `⚠️ Je kunt maximaal ${cfg.max} land${cfg.max > 1 ? 'en' : ''} kiezen voor deze ronde.`, 'warning');
+      return;
     }
-    grid.innerHTML = html;
-  });
-  const winGrid = document.getElementById('win-grid');
-  if (winGrid) {
-    winGrid.style.gridTemplateColumns = '1fr';
-    winGrid.innerHTML = maakDropdown('winnaar', 'Kies de winnaar');
+    rondeSelectie[code].add(land);
+    if (label) label.classList.add('geselecteerd');
+  } else {
+    rondeSelectie[code].delete(land);
+    if (label) label.classList.remove('geselecteerd');
   }
+  verbergAlert('alert-rondes');
+  updateTeller(code);
+}
+
+function updateTeller(code) {
+  const cfg = RONDE_CONFIG[code];
+  const el  = document.getElementById(cfg.teller);
+  if (el) el.textContent = rondeSelectie[code].size;
+}
+
+function naarSubRonde(code) {
+  // Validatie: als er een vorige ronde is, check of de selectie niet leeg is
+  // (we blokkeren niet, maar tonen een waarschuwing)
+  verbergAlert('alert-rondes');
+
+  // Verberg alle sub-rondes, toon de gevraagde
+  document.querySelectorAll('.sub-ronde').forEach(el => el.classList.remove('active'));
+  document.getElementById('sub-' + code).classList.add('active');
+
+  // Render de nieuwe sub-ronde (zodat bronlijst altijd klopt)
+  renderSubRonde(code);
+  window.scrollTo(0, 0);
 }
 
 // ===================== STAP 3 → 4 =====================
@@ -1074,24 +1225,25 @@ async function verstuurVoorspelling() {
     }
   });
 
-  // Rondes
-  const rondeConfigs = [
-    { prefix: 'r16_', count: 32 },
-    { prefix: 'r8_',  count: 16 },
-    { prefix: 'kw',   count: 8  },
-    { prefix: 'hf',   count: 4  },
-    { prefix: 'fin',  count: 2  },
+  // Rondes — ophalen uit rondeSelectie Sets
+  // Sla op als genummerde velden (r16_1, r16_2, ...) voor compatibiliteit met Google Sheets
+  const rondeVelden = [
+    { prefix: 'r16_', code: 'r16',     max: 32 },
+    { prefix: 'r8_',  code: 'r8',      max: 16 },
+    { prefix: 'kw',   code: 'kw',      max: 8  },
+    { prefix: 'hf',   code: 'hf',      max: 4  },
+    { prefix: 'fin',  code: 'fin',     max: 2  },
   ];
-  rondeConfigs.forEach(c => {
-    for (let i = 1; i <= c.count; i++) {
-      const el = document.getElementById(c.prefix + i);
-      data[c.prefix + i] = el ? el.value.trim() : '';
+  rondeVelden.forEach(r => {
+    const gekozen = Array.from(rondeSelectie[r.code]);
+    for (let i = 1; i <= r.max; i++) {
+      data[r.prefix + i] = gekozen[i - 1] || '';
     }
   });
 
   // Winnaar
-  const winEl = document.getElementById('winnaar');
-  data['winnaar'] = winEl ? winEl.value.trim() : '';
+  const winnaarGekozen = Array.from(rondeSelectie['winnaar']);
+  data['winnaar'] = winnaarGekozen[0] || '';
 
   // Bonus
   bonusvragen.forEach((v, i) => {
