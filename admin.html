@@ -842,7 +842,8 @@ async function slaRondesOp() {
 async function laadBonus() {
   try {
     const resp = await fetch(SCRIPT_URL + '?actie=getBonusvragen');
-    bonusvragen = await resp.json();
+    const data = await resp.json();
+    bonusvragen = data.vragen || data || [];
     renderBonus();
   } catch (e) {
     document.getElementById('bonus-container').innerHTML =
