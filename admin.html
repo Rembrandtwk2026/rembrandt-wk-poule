@@ -1055,79 +1055,10 @@ async function laadStats() {
     document.getElementById('stat-hoogste').textContent     = data.hoogste     || '—';
     document.getElementById('stat-update').textContent      = data.update      || new Date().toLocaleString('nl-NL');
 
-    // Deelnemerslijst tonen als die er is
-    if (data.deelnemers && data.deelnemers.length > 0) {
-      renderDeelnemers(data.deelnemers);
-    }
+    // Deelnemers worden apart geladen via laadDeelnemers()
   } catch (e) {
     // Stats niet kritisch, stil falen
   }
-}
-
-function renderDeelnemers(deelnemers) {
-  const container = document.getElementById('deelnemers-container');
-  if (!container) return;
-
-  let html = `
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; flex-wrap:wrap; gap:8px;">
-      <h3 style="margin:0;">Ingeschreven deelnemers (${deelnemers.length})</h3>
-      <button onclick="exporteerEmailsCSV()" style="padding:7px 14px; background:var(--goud); color:var(--donker); border:none; border-radius:6px; cursor:pointer; font-family:'Oswald',sans-serif; font-size:0.8rem; letter-spacing:1px; text-transform:uppercase; font-weight:bold;">
-        📥 Download CSV
-      </button>
-    </div>
-    <div style="overflow-x:auto;">
-    <table style="width:100%; border-collapse:collapse; font-size:0.85rem;">
-      <thead>
-        <tr style="border-bottom:2px solid var(--goud);">
-          <th style="padding:8px 10px; text-align:left; color:var(--goud); white-space:nowrap;">#</th>
-          <th style="padding:8px 10px; text-align:left; color:var(--goud); white-space:nowrap;">Naam</th>
-          <th style="padding:8px 10px; text-align:left; color:var(--goud); white-space:nowrap;">E-mail</th>
-          <th style="padding:8px 10px; text-align:left; color:var(--goud); white-space:nowrap;">Telefoon</th>
-          <th style="padding:8px 10px; text-align:left; color:var(--goud); white-space:nowrap;">Inzending</th>
-        </tr>
-      </thead>
-      <tbody>`;
-
-  deelnemers.forEach(function(d, i) {
-    const achtergrond = i % 2 === 0 ? 'background:#1e140a;' : 'background:#241a0e;';
-    html += `
-      <tr style="${achtergrond}">
-        <td style="padding:7px 10px; color:var(--grijs);">${i + 1}</td>
-        <td style="padding:7px 10px; font-weight:600; color:var(--licht);">${d.naam || ''}</td>
-        <td style="padding:7px 10px;">
-          ${d.email
-            ? `<a href="mailto:${d.email}" style="color:var(--goud2); text-decoration:none;">${d.email}</a>`
-            : `<span style="color:#555; font-style:italic;">—</span>`}
-        </td>
-        <td style="padding:7px 10px; color:var(--grijs);">${d.telefoon || '—'}</td>
-        <td style="padding:7px 10px; color:var(--grijs); font-size:0.78rem;">${d.timestamp || ''}</td>
-      </tr>`;
-  });
-
-  html += '</tbody></table></div>';
-  container.innerHTML = html;
-
-  // Sla op voor CSV export
-  window._deelnemerData = deelnemers;
-}
-
-function exporteerEmailsCSV() {
-  const deelnemers = window._deelnemerData || [];
-  const rijen = ['Naam,E-mail,Telefoon'];
-  deelnemers.forEach(function(d) {
-    rijen.push(
-      '"' + (d.naam     || '').replace(/"/g, '""') + '",' +
-      '"' + (d.email    || '').replace(/"/g, '""') + '",' +
-      '"' + (d.telefoon || '').replace(/"/g, '""') + '"'
-    );
-  });
-  const blob = new Blob([rijen.join('\n')], { type: 'text/csv;charset=utf-8;' });
-  const url  = URL.createObjectURL(blob);
-  const a    = document.createElement('a');
-  a.href     = url;
-  a.download = 'rembrandt_wk_deelnemers.csv';
-  a.click();
-  URL.revokeObjectURL(url);
 }
 
 // ===================== BETALINGEN =====================
@@ -1139,27 +1070,37 @@ async function laadDeelnemers() {
     const resp = await fetch(SCRIPT_URL + '?actie=getDeelnemers');
     const json = await resp.json();
     const lijst = json.deelnemers || [];
+    window._deelnemerData = lijst;
 
     if (lijst.length === 0) {
       container.innerHTML = '<div class="alert alert-info show">Nog geen deelnemers.</div>';
       return;
     }
 
-    let html = `<table class="deelnemer-tabel">
-      <thead><tr>
-        <th>#</th>
-        <th>Naam</th>
-        <th>Email</th>
-        <th>Telefoon</th>
-        <th>Betaald</th>
-      </tr></thead><tbody>`;
+    let html = `
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; flex-wrap:wrap; gap:8px;">
+        <h3 style="margin:0; font-family:'Oswald',sans-serif; color:var(--licht); letter-spacing:1px;">Ingeschreven deelnemers (${lijst.length})</h3>
+        <button onclick="exporteerEmailsCSV()" style="padding:7px 14px; background:var(--goud); color:var(--donker); border:none; border-radius:6px; cursor:pointer; font-family:'Oswald',sans-serif; font-size:0.8rem; letter-spacing:1px; text-transform:uppercase; font-weight:bold;">
+          📥 Download CSV
+        </button>
+      </div>
+      <table class="deelnemer-tabel">
+        <thead><tr>
+          <th>#</th>
+          <th>Naam</th>
+          <th>E-mail</th>
+          <th>Telefoon</th>
+          <th>Betaald</th>
+        </tr></thead><tbody>`;
 
     lijst.forEach((d, i) => {
       const aan = d.betaald;
       html += `<tr>
         <td style="color:var(--grijs);">${i + 1}</td>
         <td style="font-weight:600;">${d.naam}</td>
-        <td style="color:var(--grijs); font-size:0.82rem;">${d.email}</td>
+        <td style="font-size:0.82rem;">
+          ${d.email ? `<a href="mailto:${d.email}" style="color:var(--goud2); text-decoration:none;">${d.email}</a>` : '<span style="color:#555">—</span>'}
+        </td>
         <td style="color:var(--grijs); font-size:0.82rem;">${d.telefoon || '—'}</td>
         <td>
           <div class="betaald-toggle" onclick="toggleBetaald(${d.id}, this)">
@@ -1176,6 +1117,26 @@ async function laadDeelnemers() {
   } catch(e) {
     container.innerHTML = '<div class="alert alert-error show">Fout bij laden deelnemers.</div>';
   }
+}
+
+function exporteerEmailsCSV() {
+  const deelnemers = window._deelnemerData || [];
+  const rijen = ['Naam,E-mail,Telefoon,Betaald'];
+  deelnemers.forEach(function(d) {
+    rijen.push(
+      '"' + (d.naam     || '').replace(/"/g, '""') + '",' +
+      '"' + (d.email    || '').replace(/"/g, '""') + '",' +
+      '"' + (d.telefoon || '').replace(/"/g, '""') + '",' +
+      '"' + (d.betaald  ? 'JA' : 'NEE') + '"'
+    );
+  });
+  const blob = new Blob([rijen.join('\n')], { type: 'text/csv;charset=utf-8;' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href     = url;
+  a.download = 'rembrandt_wk_deelnemers.csv';
+  a.click();
+  URL.revokeObjectURL(url);
 }
 
 async function toggleBetaald(id, el) {
