@@ -502,8 +502,10 @@
         <input type="tel" id="inp-telefoon" placeholder="06-12345678" autocomplete="tel">
       </div>
       <div class="form-group">
-        <label>E-mailadres</label>
-        <input type="email" id="inp-email" placeholder="naam@email.nl" autocomplete="email">
+        <label>E-mailadres *</label>
+        <input type="email" id="inp-email" placeholder="naam@email.nl" autocomplete="email"
+          oninput="verbergAlert('alert-gegevens'); emailCheckDebounced()">
+        <div id="email-status" style="font-size:0.8rem; margin-top:5px; min-height:18px;"></div>
       </div>
       <button class="btn" id="btn-naar-stap2" onclick="naarStap2()">Volgende: Wedstrijden →</button>
     </div>
@@ -640,6 +642,9 @@
         <div class="groot-getal" id="klaar-naam">Super!</div>
         <p style="margin-top: 12px; color: var(--licht);">Je voorspelling is opgeslagen!</p>
         <p style="margin-top: 8px;">Vergeet niet <strong style="color:var(--goud)">€ 25,-</strong> te betalen aan de Rembrandt Pub.</p>
+        <div id="klaar-email-melding" style="margin-top:14px; padding:10px 16px; background:#1a2a1a; border:1px solid #2d8a4e; border-radius:8px; font-size:0.85rem; color:#7de0a0; display:none;">
+          📧 Een bevestiging met al jouw voorspellingen is verstuurd naar <strong id="klaar-email-adres"></strong>
+        </div>
         <p style="margin-top: 16px; font-size: 0.85rem; color: var(--grijs);">Kijk via de Ranglijst hoe je het doet zodra wedstrijden gespeeld zijn.</p>
         <button class="btn btn-gold" style="margin-top: 24px; max-width: 200px; margin-left:auto; margin-right:auto;" onclick="toonPagina('ranglijst', null)">Bekijk ranglijst</button>
       </div>
@@ -730,55 +735,126 @@ function updateStapIndicator(actief) {
   }
 }
 
-// ===================== STAP 1 → 2 (MET NAAM CHECK) =====================
-async function naarStap2() {
-  const naam = document.getElementById('inp-naam').value.trim();
+// ===================== EMAIL CHECK (live, debounced) =====================
+let emailCheckTimer = null;
+let emailBeschikbaar = null; // null = niet gecheckt, true = ok, false = bezet
 
-  // Validatie: naam verplicht
+function emailCheckDebounced() {
+  clearTimeout(emailCheckTimer);
+  emailBeschikbaar = null;
+  const statusEl = document.getElementById('email-status');
+  const emailEl  = document.getElementById('inp-email');
+  const email    = emailEl.value.trim();
+
+  statusEl.textContent = '';
+  emailEl.style.borderColor = '';
+
+  if (!email || !isGeldigEmail(email)) return;
+
+  statusEl.innerHTML = '<span style="color:var(--grijs)">⏳ Controleren...</span>';
+
+  emailCheckTimer = setTimeout(async function() {
+    try {
+      const resp = await fetch(SCRIPT_URL + '?actie=checkEmail&email=' + encodeURIComponent(email));
+      const data = await resp.json();
+      if (data.beschikbaar) {
+        emailBeschikbaar = true;
+        statusEl.innerHTML = '<span style="color:#4caf7d">✅ E-mailadres beschikbaar</span>';
+        emailEl.style.borderColor = '#4caf7d';
+      } else {
+        emailBeschikbaar = false;
+        statusEl.innerHTML = '<span style="color:#e07d7d">❌ Dit e-mailadres is al gebruikt</span>';
+        emailEl.style.borderColor = '#c8102e';
+      }
+    } catch(e) {
+      emailBeschikbaar = null;
+      statusEl.textContent = '';
+    }
+  }, 600);
+}
+
+function isGeldigEmail(email) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+// ===================== STAP 1 → 2 (MET NAAM + EMAIL CHECK) =====================
+async function naarStap2() {
+  const naam  = document.getElementById('inp-naam').value.trim();
+  const email = document.getElementById('inp-email').value.trim();
+
+  // Naam verplicht
   if (!naam) {
     toonAlert('alert-gegevens', '⚠️ Vul je naam in!', 'error');
     document.getElementById('inp-naam').focus();
     return;
   }
 
-  // Naam moet minimaal 2 woorden zijn (voor- en achternaam) — optioneel aan te passen
-  // if (naam.split(' ').filter(w => w.length > 0).length < 2) {
-  //   toonAlert('alert-gegevens', '⚠️ Vul je voor- én achternaam in.', 'error');
-  //   return;
-  // }
+  // Email verplicht
+  if (!email) {
+    toonAlert('alert-gegevens', '⚠️ Vul je e-mailadres in!', 'error');
+    document.getElementById('inp-email').focus();
+    return;
+  }
 
-  // Knop tijdelijk uitschakelen en melding tonen
+  // Email formaat controleren
+  if (!isGeldigEmail(email)) {
+    toonAlert('alert-gegevens', '⚠️ Vul een geldig e-mailadres in (bijv. naam@gmail.com).', 'error');
+    document.getElementById('inp-email').focus();
+    return;
+  }
+
+  // Als live-check al een negatief resultaat gaf: blokkeer
+  if (emailBeschikbaar === false) {
+    toonAlert('alert-gegevens', '⚠️ Dit e-mailadres is al gebruikt. Gebruik een ander e-mailadres.', 'error');
+    document.getElementById('inp-email').focus();
+    return;
+  }
+
   const btn = document.getElementById('btn-naar-stap2');
   btn.disabled = true;
-  btn.textContent = 'Naam controleren...';
+  btn.textContent = 'Controleren...';
   verbergAlert('alert-gegevens');
 
   try {
-    // CHECK: bestaat deze naam al in Google Sheets?
-    const resp = await fetch(SCRIPT_URL + '?action=checkNaam&naam=' + encodeURIComponent(naam));
-    const result = await resp.json();
-
-    if (result.bestaat) {
-      // Naam bestaat al
+    // CHECK 1: naam al ingediend?
+    const respNaam = await fetch(SCRIPT_URL + '?actie=checkNaam&naam=' + encodeURIComponent(naam));
+    const resultNaam = await respNaam.json();
+    if (resultNaam.bestaat) {
       toonAlert('alert-gegevens',
-        '⚠️ De naam "' + naam + '" is al ingediend. Heb je je naam al eerder ingevuld? Neem contact op met de Rembrandt Pub.',
+        '⚠️ De naam "' + naam + '" is al ingediend. Heb je al eerder ingevuld? Neem contact op met de Rembrandt Pub.',
         'error');
       btn.disabled = false;
       btn.textContent = 'Volgende: Wedstrijden →';
       return;
     }
 
-    // Naam is vrij — door naar stap 2
-    verbergAlert('alert-gegevens');
+    // CHECK 2: email al ingediend? (als live-check nog niet klaar was)
+    if (emailBeschikbaar === null) {
+      const respEmail = await fetch(SCRIPT_URL + '?actie=checkEmail&email=' + encodeURIComponent(email));
+      const resultEmail = await respEmail.json();
+      if (!resultEmail.beschikbaar) {
+        toonAlert('alert-gegevens',
+          '⚠️ Dit e-mailadres is al gebruikt. Gebruik een ander e-mailadres.',
+          'error');
+        emailBeschikbaar = false;
+        document.getElementById('inp-email').style.borderColor = '#c8102e';
+        document.getElementById('email-status').innerHTML = '<span style="color:#e07d7d">❌ Dit e-mailadres is al gebruikt</span>';
+        btn.disabled = false;
+        btn.textContent = 'Volgende: Wedstrijden →';
+        return;
+      }
+      emailBeschikbaar = true;
+    }
+
+    // Alles ok — door naar stap 2
     btn.disabled = false;
     btn.textContent = 'Volgende: Wedstrijden →';
     naarStap(2);
     if (wedstrijden.length === 0) await laadWedstrijden();
 
   } catch (e) {
-    // Bij fout: waarschuw maar laat toch doorgaan (betere UX dan blokkeren)
     toonAlert('alert-gegevens',
-      '⚠️ Kon naam niet controleren op duplicaten, maar je kunt gewoon doorgaan.',
+      '⚠️ Kon gegevens niet controleren, maar je kunt gewoon doorgaan.',
       'warning');
     btn.disabled = false;
     btn.textContent = 'Volgende: Wedstrijden →';
@@ -790,7 +866,7 @@ async function naarStap2() {
 // ===================== WEDSTRIJDEN LADEN =====================
 async function laadWedstrijden() {
   try {
-    const resp = await fetch(SCRIPT_URL + '?action=getWedstrijden');
+    const resp = await fetch(SCRIPT_URL + '?actie=getWedstrijden');
     wedstrijden = await resp.json();
     renderWedstrijden();
   } catch (e) {
@@ -935,7 +1011,7 @@ async function naarStap4() {
 
 async function laadBonusvragen() {
   try {
-    const resp = await fetch(SCRIPT_URL + '?action=getBonusvragen');
+    const resp = await fetch(SCRIPT_URL + '?actie=getBonusvragen');
     bonusvragen = await resp.json();
     renderBonus();
   } catch (e) {
@@ -976,7 +1052,7 @@ async function verstuurVoorspelling() {
   }
 
   const data = {
-    action: 'submitVoorspelling',
+    actie: 'submitVoorspelling',
     naam: naam,
     telefoon: document.getElementById('inp-telefoon').value.trim(),
     email: document.getElementById('inp-email').value.trim(),
@@ -1030,6 +1106,12 @@ async function verstuurVoorspelling() {
 
     if (result.success) {
       document.getElementById('klaar-naam').textContent = naam + '!';
+      // Toon emailbevestiging als er een emailadres is
+      const email = document.getElementById('inp-email').value.trim();
+      if (email) {
+        document.getElementById('klaar-email-adres').textContent = email;
+        document.getElementById('klaar-email-melding').style.display = 'block';
+      }
       naarStap(5);
       document.getElementById('stap-indicator').style.display = 'none';
     } else {
@@ -1050,7 +1132,7 @@ async function laadRanglijst() {
   const container = document.getElementById('ranglijst-container');
   container.innerHTML = '<div class="loading"><div class="spinner"></div>Laden...</div>';
   try {
-    const resp = await fetch(SCRIPT_URL + '?action=getRanglijst');
+    const resp = await fetch(SCRIPT_URL + '?actie=getRanglijst');
     const data = await resp.json();
 
     if (!data || data.length === 0) {
