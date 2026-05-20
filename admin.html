@@ -702,7 +702,7 @@ async function slaUitslagOp(id) {
     });
     const result = await resp.json();
 
-    if (result.success) {
+    if (result.succes) {
       btn.textContent = '✓ Opgeslagen';
       btn.className = 'opslaan-btn opgeslagen';
       btn.disabled = false;
@@ -714,7 +714,7 @@ async function slaUitslagOp(id) {
       uEl.style.color       = '#111';
       toonAlert('alert-wedstrijden', '✅ Uitslag wedstrijd ' + id + ' opgeslagen!', 'success');
     } else {
-      toonAlert('alert-wedstrijden', '❌ Fout: ' + (result.error || 'Onbekende fout'), 'error');
+      toonAlert('alert-wedstrijden', '❌ Fout: ' + (result.fout || 'Onbekende fout'), 'error');
       btn.textContent = 'Opslaan';
       btn.className = 'opslaan-btn';
       btn.disabled = false;
@@ -830,11 +830,11 @@ async function slaRondesOp() {
     });
     const result = await resp.json();
 
-    if (result.success) {
+    if (result.succes) {
       toonAlert('alert-rondes',
         '✅ Rondes opgeslagen! Vergeet niet de puntentelling te herberekenen.', 'success');
     } else {
-      toonAlert('alert-rondes', '❌ Fout: ' + (result.error || 'Onbekende fout'), 'error');
+      toonAlert('alert-rondes', '❌ Fout: ' + (result.fout || 'Onbekende fout'), 'error');
     }
   } catch (e) {
     toonAlert('alert-rondes', '❌ Verbindingsfout. Probeer opnieuw.', 'error');
@@ -899,13 +899,13 @@ async function slaBonusAntwoordOp(id) {
     });
     const result = await resp.json();
 
-    if (result.success) {
+    if (result.succes) {
       btn.textContent = '✓ Opgeslagen';
       btn.className = 'opslaan-btn opgeslagen';
       btn.disabled = false;
       toonAlert('alert-bonus', '✅ Antwoord voor vraag ' + id + ' opgeslagen!', 'success');
     } else {
-      toonAlert('alert-bonus', '❌ Fout: ' + (result.error || 'Onbekende fout'), 'error');
+      toonAlert('alert-bonus', '❌ Fout: ' + (result.fout || 'Onbekende fout'), 'error');
       btn.textContent = 'Opslaan';
       btn.className = 'opslaan-btn';
       btn.disabled = false;
@@ -932,12 +932,12 @@ async function herbereken() {
     });
     const result = await resp.json();
 
-    if (result.success) {
+    if (result.succes) {
       toonAlert('alert-punten',
         '✅ Puntentelling bijgewerkt! ' + (result.bericht || ''), 'success');
       laadStats();
     } else {
-      toonAlert('alert-punten', '❌ Fout: ' + (result.error || 'Onbekende fout'), 'error');
+      toonAlert('alert-punten', '❌ Fout: ' + (result.fout || 'Onbekende fout'), 'error');
     }
   } catch (e) {
     toonAlert('alert-punten', '❌ Verbindingsfout. Probeer opnieuw.', 'error');
