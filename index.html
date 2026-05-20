@@ -1057,19 +1057,12 @@ async function laadWedstrijden() {
 function renderWedstrijden() {
   const container = document.getElementById('wedstrijden-container');
 
-  // Groepeer per datum
+  // Groepeer per datum — gebruik de tekst direct zoals ingevoerd in Sheets (bijv. "zo 28 jun")
   const perDatum = {};
   wedstrijden.forEach(w => {
     const datum = w.Datum || w.datum || 'Onbekend';
-    let datumLabel = datum;
-    if (datum && datum !== 'Onbekend') {
-      try {
-        const d = new Date(datum);
-        datumLabel = d.toLocaleDateString('nl-NL', { weekday: 'long', day: 'numeric', month: 'long' });
-      } catch(e) { datumLabel = datum; }
-    }
-    if (!perDatum[datumLabel]) perDatum[datumLabel] = [];
-    perDatum[datumLabel].push(w);
+    if (!perDatum[datum]) perDatum[datum] = [];
+    perDatum[datum].push(w);
   });
 
   let html = '';
