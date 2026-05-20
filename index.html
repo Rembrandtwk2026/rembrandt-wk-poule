@@ -383,6 +383,74 @@
     .landen-checkboxes { grid-template-columns: 1fr 1fr; }
   }
 
+  /* Badges voor landen */
+  .badge-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 6px;
+  }
+  .land-badge {
+    display: inline-block;
+    background: #2a1a0e;
+    border: 1px solid var(--bruin);
+    color: var(--licht);
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.78rem;
+    font-family: 'Oswald', sans-serif;
+    letter-spacing: 0.5px;
+  }
+  .land-badge.goud { border-color: var(--goud); color: var(--goud); }
+  .land-badge.winnaar { background: var(--goud); color: var(--donker); font-weight: 700; font-size: 0.9rem; padding: 5px 14px; }
+
+  /* Ronde samenvatting rij */
+  .ronde-samenvatting-rij {
+    padding: 10px 0;
+    border-bottom: 1px solid #2a2a2a;
+  }
+  .ronde-samenvatting-rij:last-child { border-bottom: none; }
+  .ronde-samenvatting-label {
+    font-family: 'Oswald', sans-serif;
+    font-size: 0.8rem;
+    color: var(--grijs);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+  }
+
+  /* Wedstrijd samenvatting */
+  .wedstrijd-samenvatting {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 0;
+    border-bottom: 1px solid #2a2a2a;
+    font-size: 0.85rem;
+  }
+  .wedstrijd-samenvatting:last-child { border-bottom: none; }
+  .ws-thuis { text-align: right; font-weight: 600; }
+  .ws-uit { text-align: left; font-weight: 600; }
+  .ws-score {
+    text-align: center;
+    font-family: 'Oswald', sans-serif;
+    font-size: 1rem;
+    color: var(--goud);
+    white-space: nowrap;
+    background: #111;
+    border-radius: 6px;
+    padding: 3px 10px;
+  }
+  .ws-datum {
+    font-size: 0.75rem;
+    color: var(--grijs);
+    text-align: center;
+    grid-column: 1 / -1;
+    margin-top: -2px;
+    display: none; /* toon alleen per datum-sectie */
+  }
+
   html { scroll-behavior: smooth; }
 
   .stap-pagina { display: none; }
@@ -735,11 +803,28 @@
         <p style="margin-top: 12px; color: var(--licht);">Je voorspelling is opgeslagen!</p>
         <p style="margin-top: 8px;">Vergeet niet <strong style="color:var(--goud)">€ 25,-</strong> te betalen aan de Rembrandt Pub.</p>
         <div id="klaar-email-melding" style="margin-top:14px; padding:10px 16px; background:#1a2a1a; border:1px solid #2d8a4e; border-radius:8px; font-size:0.85rem; color:#7de0a0; display:none;">
-          📧 Een bevestiging met al jouw voorspellingen is verstuurd naar <strong id="klaar-email-adres"></strong>
+          📧 Een bevestiging is verstuurd naar <strong id="klaar-email-adres"></strong>
         </div>
-        <p style="margin-top: 16px; font-size: 0.85rem; color: var(--grijs);">Kijk via de Ranglijst hoe je het doet zodra wedstrijden gespeeld zijn.</p>
         <button class="btn btn-gold" style="margin-top: 24px; max-width: 200px; margin-left:auto; margin-right:auto;" onclick="toonPagina('ranglijst', null)">Bekijk ranglijst</button>
       </div>
+    </div>
+
+    <!-- Samenvatting wedstrijden -->
+    <div class="card" id="klaar-wedstrijden-card" style="display:none;">
+      <h2>⚽ Wedstrijdvoorspellingen</h2>
+      <div id="klaar-wedstrijden-inhoud"></div>
+    </div>
+
+    <!-- Samenvatting rondes -->
+    <div class="card" id="klaar-rondes-card" style="display:none;">
+      <h2>🏆 Ronde-voorspellingen</h2>
+      <div id="klaar-rondes-inhoud"></div>
+    </div>
+
+    <!-- Samenvatting bonus -->
+    <div class="card" id="klaar-bonus-card" style="display:none;">
+      <h2>🎯 Bonusvragen</h2>
+      <div id="klaar-bonus-inhoud"></div>
     </div>
   </div>
 
@@ -1261,12 +1346,13 @@ async function verstuurVoorspelling() {
 
     if (result.succes) {
       document.getElementById('klaar-naam').textContent = naam + '!';
-      // Toon emailbevestiging als er een emailadres is
       const email = document.getElementById('inp-email').value.trim();
       if (email) {
         document.getElementById('klaar-email-adres').textContent = email;
         document.getElementById('klaar-email-melding').style.display = 'block';
       }
+      // Bouw samenvatting
+      toonSamenvatting(data);
       naarStap(5);
       document.getElementById('stap-indicator').style.display = 'none';
     } else {
@@ -1279,6 +1365,102 @@ async function verstuurVoorspelling() {
     toonAlert('alert-bonus', '⚠️ Verbindingsfout. Controleer je internet en probeer opnieuw.', 'error');
     btn.disabled = false;
     btn.textContent = '✅ Inzenden!';
+  }
+}
+
+// ===================== SAMENVATTING BEDANKSCHERM =====================
+function toonSamenvatting(data) {
+
+  // ── Wedstrijden ──
+  const wedstrijdenCard   = document.getElementById('klaar-wedstrijden-card');
+  const wedstrijdenInhoud = document.getElementById('klaar-wedstrijden-inhoud');
+  const ingevuldeWedstrijden = wedstrijden.filter(w => {
+    const keuze = data['w' + (w.ID || w.id)] || '';
+    return keuze !== '';
+  });
+
+  if (ingevuldeWedstrijden.length > 0) {
+    // Groepeer per datum
+    const perDatum = {};
+    ingevuldeWedstrijden.forEach(w => {
+      const datum = w.Datum || w.datum || 'Onbekend';
+      if (!perDatum[datum]) perDatum[datum] = [];
+      perDatum[datum].push(w);
+    });
+
+    let html = '';
+    Object.entries(perDatum).forEach(([datum, lijst]) => {
+      html += `<div class="sectie-datum">${datum}</div>`;
+      lijst.forEach(w => {
+        const id    = w.ID || w.id;
+        const thuis = w.Thuis || w.thuis || '';
+        const uit   = w.Uit   || w.uit   || '';
+        const score = data['w' + id] || '';
+        const nlThuis = thuis === 'NEDERLAND';
+        const nlUit   = uit   === 'NEDERLAND';
+        html += `
+          <div class="wedstrijd-samenvatting">
+            <div class="ws-thuis ${nlThuis ? 'nl' : ''}" style="${nlThuis ? 'color:var(--goud)' : ''}">${thuis}</div>
+            <div class="ws-score">${score}</div>
+            <div class="ws-uit ${nlUit ? 'nl' : ''}" style="${nlUit ? 'color:var(--goud)' : ''}">${uit}</div>
+          </div>`;
+      });
+    });
+    wedstrijdenInhoud.innerHTML = html;
+    wedstrijdenCard.style.display = 'block';
+  }
+
+  // ── Rondes ──
+  const rondesCard   = document.getElementById('klaar-rondes-card');
+  const rondesInhoud = document.getElementById('klaar-rondes-inhoud');
+
+  const rondeInfo = [
+    { code: 'r16',     label: '🔵 16e Finales',   stijl: '' },
+    { code: 'r8',      label: '🟡 8e Finales',     stijl: '' },
+    { code: 'kw',      label: '🟠 Kwartfinales',   stijl: '' },
+    { code: 'hf',      label: '🔴 Halve Finales',  stijl: '' },
+    { code: 'fin',     label: '⭐ Finale',          stijl: 'goud' },
+    { code: 'winnaar', label: '🥇 Winnaar',         stijl: 'winnaar' },
+  ];
+
+  let rondeHtml = '';
+  rondeInfo.forEach(r => {
+    const landen = Array.from(rondeSelectie[r.code]);
+    if (landen.length === 0) return;
+    rondeHtml += `<div class="ronde-samenvatting-rij">
+      <div class="ronde-samenvatting-label">${r.label}</div>
+      <div class="badge-grid">`;
+    landen.sort().forEach(land => {
+      rondeHtml += `<span class="land-badge ${r.stijl}">${land}</span>`;
+    });
+    rondeHtml += `</div></div>`;
+  });
+
+  if (rondeHtml) {
+    rondesInhoud.innerHTML = rondeHtml;
+    rondesCard.style.display = 'block';
+  }
+
+  // ── Bonusvragen ──
+  const bonusCard   = document.getElementById('klaar-bonus-card');
+  const bonusInhoud = document.getElementById('klaar-bonus-inhoud');
+  let bonusHtml = '';
+
+  bonusvragen.forEach((v, i) => {
+    const id      = v.ID || v.id || (i + 1);
+    const vraag   = v.Vraag || v.vraag || ('Vraag ' + id);
+    const antwoord = data['b' + id] || '';
+    if (!antwoord) return;
+    bonusHtml += `
+      <div class="bonus-item">
+        <div class="bonus-vraag">${vraag}</div>
+        <div style="font-weight:600; color:var(--goud2); font-size:0.95rem;">${antwoord}</div>
+      </div>`;
+  });
+
+  if (bonusHtml) {
+    bonusInhoud.innerHTML = bonusHtml;
+    bonusCard.style.display = 'block';
   }
 }
 
