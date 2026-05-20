@@ -332,16 +332,17 @@
   }
   .bonus-item input:focus { outline: none; border-color: var(--goud); }
 
-  .progress-sticky {
-    position: sticky;
-    top: 0;
-    z-index: 90;
+  .progress-fixed {
+    position: fixed;
+    left: 0;
+    right: 0;
+    z-index: 200;
     background: var(--donker2);
-    border-bottom: 1px solid #333;
-    padding: 8px 16px 10px;
-    border-top: 1px solid #333;
-    margin: 0 -16px 12px;
+    border-bottom: 2px solid var(--goud);
+    padding: 6px 20px 8px;
+    display: none;
   }
+  .progress-fixed.zichtbaar { display: block; }
   .progress-bar {
     height: 6px;
     background: #333;
@@ -638,7 +639,7 @@
 
   <!-- STAP 2: WEDSTRIJDEN -->
   <div class="stap-pagina" id="stap2">
-    <div class="progress-sticky">
+    <div class="progress-fixed" id="voortgang-fixed">
       <div class="progress-text" id="voortgang-tekst">0 van 72 ingevuld</div>
       <div class="progress-bar"><div class="progress-fill" id="voortgang-bar" style="width:0%"></div></div>
     </div>
@@ -911,6 +912,7 @@ function naarStap(nr) {
   huidigeStap = nr;
   updateStapIndicator(nr);
   window.scrollTo(0, 0);
+  updateVoortgangBalk();
 }
 
 function updateStapIndicator(actief) {
@@ -1541,14 +1543,21 @@ updateStapIndicator(1);
 </html>
 <script>
 // Sticky offset na load
-function updateStickyOffset() {
+function updateVoortgangBalk() {
+  const balk   = document.getElementById('voortgang-fixed');
+  if (!balk) return;
   const header = document.querySelector('.header');
   const nav    = document.querySelector('.nav');
   const offset = (header ? header.offsetHeight : 0) + (nav ? nav.offsetHeight : 0);
-  document.querySelectorAll('.progress-sticky').forEach(el => {
-    el.style.top = offset + 'px';
-  });
+  balk.style.top = offset + 'px';
+  // Alleen tonen op stap 2
+  const stap2 = document.getElementById('stap2');
+  if (stap2 && stap2.classList.contains('active')) {
+    balk.classList.add('zichtbaar');
+  } else {
+    balk.classList.remove('zichtbaar');
+  }
 }
-window.addEventListener('load', updateStickyOffset);
-window.addEventListener('resize', updateStickyOffset);
+window.addEventListener('load', updateVoortgangBalk);
+window.addEventListener('resize', updateVoortgangBalk);
 </script>
