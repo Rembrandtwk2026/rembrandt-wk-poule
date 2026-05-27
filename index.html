@@ -160,11 +160,9 @@
     padding: 8px 4px !important;
     font-size: 1.1rem !important;
     font-weight: 700;
-    /* FIX: geen placeholder "0" meer — leeg veld = niet ingevuld */
   }
   .score-input span { color: var(--grijs); font-weight: 700; }
 
-  /* Visuele markering als beide scores ingevuld zijn */
   .wedstrijd-row.ingevuld .score-input input {
     border-color: #4caf7d !important;
     background: #e8f5ee !important;
@@ -393,7 +391,6 @@
     .landen-checkboxes { grid-template-columns: 1fr 1fr; }
   }
 
-  /* Badges voor landen */
   .badge-grid {
     display: flex;
     flex-wrap: wrap;
@@ -414,7 +411,6 @@
   .land-badge.goud { border-color: var(--goud); color: var(--goud); }
   .land-badge.winnaar { background: var(--goud); color: var(--donker); font-weight: 700; font-size: 0.9rem; padding: 5px 14px; }
 
-  /* Ronde samenvatting rij */
   .ronde-samenvatting-rij {
     padding: 10px 0;
     border-bottom: 1px solid #2a2a2a;
@@ -429,7 +425,6 @@
     margin-bottom: 6px;
   }
 
-  /* Wedstrijd samenvatting */
   .wedstrijd-samenvatting {
     display: grid;
     grid-template-columns: 1fr auto 1fr;
@@ -451,14 +446,6 @@
     background: #111;
     border-radius: 6px;
     padding: 3px 10px;
-  }
-  .ws-datum {
-    font-size: 0.75rem;
-    color: var(--grijs);
-    text-align: center;
-    grid-column: 1 / -1;
-    margin-top: -2px;
-    display: none; /* toon alleen per datum-sectie */
   }
 
   html { scroll-behavior: smooth; }
@@ -505,7 +492,6 @@
     letter-spacing: 0.5px;
   }
 
-  /* Checkbox landen */
   .landen-checkboxes {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
@@ -556,11 +542,9 @@
     color: var(--goud2);
   }
 
-  /* Sub-rondes binnen stap 3 */
   .sub-ronde { display: none; }
   .sub-ronde.active { display: block; }
 
-  /* FIX: naam-check loader */
   .naam-check-bezig {
     opacity: 0.6;
     pointer-events: none;
@@ -570,7 +554,8 @@
 <body>
 
 <div class="header">
-  <img src="images/logo/logo.png" alt="Rembrandt Pub" class="header-logo" onerror="this.style.display='none'">  <h1>WK POULE 2026</h1>
+  <img src="images/logo/logo.png" alt="Rembrandt Pub" class="header-logo" onerror="this.style.display='none'">
+  <h1>WK POULE 2026</h1>
   <p>Vul je voorspellingen in voor het WK!</p>
 </div>
 
@@ -828,19 +813,16 @@
       </div>
     </div>
 
-    <!-- Samenvatting wedstrijden -->
     <div class="card" id="klaar-wedstrijden-card" style="display:none;">
       <h2>⚽ Wedstrijdvoorspellingen</h2>
       <div id="klaar-wedstrijden-inhoud"></div>
     </div>
 
-    <!-- Samenvatting rondes -->
     <div class="card" id="klaar-rondes-card" style="display:none;">
       <h2>🏆 Ronde-voorspellingen</h2>
       <div id="klaar-rondes-inhoud"></div>
     </div>
 
-    <!-- Samenvatting bonus -->
     <div class="card" id="klaar-bonus-card" style="display:none;">
       <h2>🎯 Bonusvragen</h2>
       <div id="klaar-bonus-inhoud"></div>
@@ -897,6 +879,8 @@
 </div>
 
 <script>
+// ===================== CONFIGURATIE =====================
+// FIX: nieuwe Apps Script URL + Content-Type header toegevoegd aan POST
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwnIzHd-3SLAgbsUpWD1CEZe5ZIMdkUkfk3aUrqtHChOGU1KTt_b3N_WJkyBDa6HxxRug/exec';
 
 let wedstrijden = [];
@@ -932,9 +916,9 @@ function updateStapIndicator(actief) {
   }
 }
 
-// ===================== EMAIL CHECK (live, debounced) =====================
+// ===================== EMAIL CHECK =====================
 let emailCheckTimer = null;
-let emailBeschikbaar = null; // null = niet gecheckt, true = ok, false = bezet
+let emailBeschikbaar = null;
 
 function emailCheckDebounced() {
   clearTimeout(emailCheckTimer);
@@ -974,33 +958,26 @@ function isGeldigEmail(email) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
-// ===================== STAP 1 → 2 (MET NAAM + EMAIL CHECK) =====================
+// ===================== STAP 1 → 2 =====================
 async function naarStap2() {
   const naam  = document.getElementById('inp-naam').value.trim();
   const email = document.getElementById('inp-email').value.trim();
 
-  // Naam verplicht
   if (!naam) {
     toonAlert('alert-gegevens', '⚠️ Vul je naam in!', 'error');
     document.getElementById('inp-naam').focus();
     return;
   }
-
-  // Email verplicht
   if (!email) {
     toonAlert('alert-gegevens', '⚠️ Vul je e-mailadres in!', 'error');
     document.getElementById('inp-email').focus();
     return;
   }
-
-  // Email formaat controleren
   if (!isGeldigEmail(email)) {
     toonAlert('alert-gegevens', '⚠️ Vul een geldig e-mailadres in (bijv. naam@gmail.com).', 'error');
     document.getElementById('inp-email').focus();
     return;
   }
-
-  // Als live-check al een negatief resultaat gaf: blokkeer
   if (emailBeschikbaar === false) {
     toonAlert('alert-gegevens', '⚠️ Dit e-mailadres is al gebruikt. Gebruik een ander e-mailadres.', 'error');
     document.getElementById('inp-email').focus();
@@ -1013,7 +990,6 @@ async function naarStap2() {
   verbergAlert('alert-gegevens');
 
   try {
-    // CHECK 1: naam al ingediend?
     const respNaam = await fetch(SCRIPT_URL + '?actie=checkNaam&naam=' + encodeURIComponent(naam));
     const resultNaam = await respNaam.json();
     if (!resultNaam.beschikbaar) {
@@ -1025,14 +1001,11 @@ async function naarStap2() {
       return;
     }
 
-    // CHECK 2: email al ingediend? (als live-check nog niet klaar was)
     if (emailBeschikbaar === null) {
       const respEmail = await fetch(SCRIPT_URL + '?actie=checkEmail&email=' + encodeURIComponent(email));
       const resultEmail = await respEmail.json();
       if (!resultEmail.beschikbaar) {
-        toonAlert('alert-gegevens',
-          '⚠️ Dit e-mailadres is al gebruikt. Gebruik een ander e-mailadres.',
-          'error');
+        toonAlert('alert-gegevens', '⚠️ Dit e-mailadres is al gebruikt. Gebruik een ander e-mailadres.', 'error');
         emailBeschikbaar = false;
         document.getElementById('inp-email').style.borderColor = '#c8102e';
         document.getElementById('email-status').innerHTML = '<span style="color:#e07d7d">❌ Dit e-mailadres is al gebruikt</span>';
@@ -1043,16 +1016,13 @@ async function naarStap2() {
       emailBeschikbaar = true;
     }
 
-    // Alles ok — door naar stap 2
     btn.disabled = false;
     btn.textContent = 'Volgende: Wedstrijden →';
     naarStap(2);
     if (wedstrijden.length === 0) await laadWedstrijden();
 
   } catch (e) {
-    toonAlert('alert-gegevens',
-      '⚠️ Kon gegevens niet controleren, maar je kunt gewoon doorgaan.',
-      'warning');
+    toonAlert('alert-gegevens', '⚠️ Kon gegevens niet controleren, maar je kunt gewoon doorgaan.', 'warning');
     btn.disabled = false;
     btn.textContent = 'Volgende: Wedstrijden →';
     naarStap(2);
@@ -1076,8 +1046,6 @@ async function laadWedstrijden() {
 
 function renderWedstrijden() {
   const container = document.getElementById('wedstrijden-container');
-
-  // Groepeer per datum — gebruik de tekst direct zoals ingevoerd in Sheets (bijv. "zo 28 jun")
   const perDatum = {};
   wedstrijden.forEach(w => {
     const datum = w.Datum || w.datum || 'Onbekend';
@@ -1114,28 +1082,22 @@ function renderWedstrijden() {
 }
 
 function updateVoortgang(gewijzigdId) {
-  // Markeer rij als ingevuld (groen) als beide velden een waarde hebben
   if (gewijzigdId) {
     const t = document.getElementById('w' + gewijzigdId + '_thuis');
     const u = document.getElementById('w' + gewijzigdId + '_uit');
     const rij = document.getElementById('row-' + gewijzigdId);
-    if (rij) {
-      // FIX: t.value !== '' betekent ook 0 is ingevuld
-      if (t && u && t.value !== '' && u.value !== '') {
-        rij.classList.add('ingevuld');
-      } else {
-        rij.classList.remove('ingevuld');
-      }
+    if (rij && t && u && t.value !== '' && u.value !== '') {
+      rij.classList.add('ingevuld');
+    } else if (rij) {
+      rij.classList.remove('ingevuld');
     }
   }
 
-  // Tel ingevulde wedstrijden
   let ingevuld = 0;
   wedstrijden.forEach(w => {
     const id = w.ID || w.id;
     const t = document.getElementById('w' + id + '_thuis');
     const u = document.getElementById('w' + id + '_uit');
-    // FIX: gebruik !== '' om ook 0 mee te tellen
     if (t && u && t.value !== '' && u.value !== '') ingevuld++;
   });
   const totaal = wedstrijden.length;
@@ -1163,33 +1125,28 @@ const LANDEN = [
   'ZWITSERLAND','ZUID-AFRIKA','ZUID-KOREA'
 ].sort();
 
-// Rondes configuratie: code, max te kiezen, vorige ronde (bronlijst)
 const RONDE_CONFIG = {
-  r16:     { max: 32, bron: null,      teller: 'teller-r16',     container: 'check-r16'     },
-  r8:      { max: 16, bron: 'r16',     teller: 'teller-r8',      container: 'check-r8'      },
-  kw:      { max: 8,  bron: 'r8',      teller: 'teller-kw',      container: 'check-kw'      },
-  hf:      { max: 4,  bron: 'kw',      teller: 'teller-hf',      container: 'check-hf'      },
-  fin:     { max: 2,  bron: 'hf',      teller: 'teller-fin',     container: 'check-fin'     },
-  winnaar: { max: 1,  bron: 'fin',     teller: 'teller-winnaar', container: 'check-winnaar' },
+  r16:     { max: 32, bron: null,  teller: 'teller-r16',     container: 'check-r16'     },
+  r8:      { max: 16, bron: 'r16', teller: 'teller-r8',      container: 'check-r8'      },
+  kw:      { max: 8,  bron: 'r8',  teller: 'teller-kw',      container: 'check-kw'      },
+  hf:      { max: 4,  bron: 'kw',  teller: 'teller-hf',      container: 'check-hf'      },
+  fin:     { max: 2,  bron: 'hf',  teller: 'teller-fin',     container: 'check-fin'     },
+  winnaar: { max: 1,  bron: 'fin', teller: 'teller-winnaar', container: 'check-winnaar' },
 };
 
-// Opgeslagen selecties per ronde
 const rondeSelectie = { r16: new Set(), r8: new Set(), kw: new Set(), hf: new Set(), fin: new Set(), winnaar: new Set() };
 
 function renderSubRonde(code) {
-  const cfg       = RONDE_CONFIG[code];
+  const cfg = RONDE_CONFIG[code];
   const container = document.getElementById(cfg.container);
-  // Bronlijst: als er een vorige ronde is, gebruik die selectie; anders alle landen
   const bronLijst = cfg.bron ? Array.from(rondeSelectie[cfg.bron]).sort() : LANDEN;
 
-  // Als de bronlijst leeg is (vorige ronde niets gekozen), waarschuw
   if (cfg.bron && bronLijst.length === 0) {
     container.innerHTML = '<div style="color:var(--grijs);font-size:0.9rem;padding:10px 0;">Geen landen geselecteerd in de vorige ronde.</div>';
     updateTeller(code);
     return;
   }
 
-  // Verwijder landen uit huidige selectie die niet meer in de bronlijst zitten
   rondeSelectie[code].forEach(land => {
     if (!bronLijst.includes(land)) rondeSelectie[code].delete(land);
   });
@@ -1213,13 +1170,12 @@ function renderSubRonde(code) {
 }
 
 function toggleRondeLand(checkbox, code, land) {
-  const cfg   = RONDE_CONFIG[code];
+  const cfg = RONDE_CONFIG[code];
   const safeId = land.replace(/[^a-zA-Z]/g, '');
-  const label  = document.getElementById('lbl-' + code + '-' + safeId);
+  const label = document.getElementById('lbl-' + code + '-' + safeId);
 
   if (checkbox.checked) {
     if (rondeSelectie[code].size >= cfg.max) {
-      // Max bereikt: vinkje terugzetten
       checkbox.checked = false;
       toonAlert('alert-rondes', `⚠️ Je kunt maximaal ${cfg.max} land${cfg.max > 1 ? 'en' : ''} kiezen voor deze ronde.`, 'warning');
       return;
@@ -1235,21 +1191,14 @@ function toggleRondeLand(checkbox, code, land) {
 }
 
 function updateTeller(code) {
-  const cfg = RONDE_CONFIG[code];
-  const el  = document.getElementById(cfg.teller);
+  const el = document.getElementById(RONDE_CONFIG[code].teller);
   if (el) el.textContent = rondeSelectie[code].size;
 }
 
 function naarSubRonde(code) {
-  // Validatie: als er een vorige ronde is, check of de selectie niet leeg is
-  // (we blokkeren niet, maar tonen een waarschuwing)
   verbergAlert('alert-rondes');
-
-  // Verberg alle sub-rondes, toon de gevraagde
   document.querySelectorAll('.sub-ronde').forEach(el => el.classList.remove('active'));
   document.getElementById('sub-' + code).classList.add('active');
-
-  // Render de nieuwe sub-ronde (zodat bronlijst altijd klopt)
   renderSubRonde(code);
   window.scrollTo(0, 0);
 }
@@ -1287,15 +1236,13 @@ function renderBonus() {
   container.innerHTML = html;
 }
 
-// ===================== VERSTUUR =====================
+// ===================== VERSTUUR (MET CONTENT-TYPE FIX) =====================
 async function verstuurVoorspelling() {
   const btn = event.target;
   btn.disabled = true;
   btn.textContent = 'Bezig met opslaan...';
 
   const naam = document.getElementById('inp-naam').value.trim();
-
-  // Extra veiligheidscheck: naam mag niet leeg zijn
   if (!naam) {
     toonAlert('alert-bonus', '⚠️ Geen naam gevonden. Ga terug naar stap 1.', 'error');
     btn.disabled = false;
@@ -1310,38 +1257,28 @@ async function verstuurVoorspelling() {
     email: document.getElementById('inp-email').value.trim(),
   };
 
-  // Wedstrijden — FIX: ook 0 wordt opgeslagen
+  // Wedstrijden als score (bijv. "2-1")
   wedstrijden.forEach(w => {
     const id = w.ID || w.id;
     const t = document.getElementById('w' + id + '_thuis');
     const u = document.getElementById('w' + id + '_uit');
-    // FIX: t.value !== '' zodat 0 ook meegenomen wordt
-    if (t && u && t.value !== '' && u.value !== '') {
-      data['w' + id] = t.value + '-' + u.value;
-    } else {
-      data['w' + id] = '';
-    }
+    data['w' + id] = (t && u && t.value !== '' && u.value !== '') ? t.value + '-' + u.value : '';
   });
 
-  // Rondes — ophalen uit rondeSelectie Sets
-  // Sla op als genummerde velden (r16_1, r16_2, ...) voor compatibiliteit met Google Sheets
-  const rondeVelden = [
-    { prefix: 'r16_', code: 'r16',     max: 32 },
-    { prefix: 'r8_',  code: 'r8',      max: 16 },
-    { prefix: 'kw',   code: 'kw',      max: 8  },
-    { prefix: 'hf',   code: 'hf',      max: 4  },
-    { prefix: 'fin',  code: 'fin',     max: 2  },
-  ];
-  rondeVelden.forEach(r => {
+  // Rondes
+  [
+    { prefix: 'r16_', code: 'r16', max: 32 },
+    { prefix: 'r8_',  code: 'r8',  max: 16 },
+    { prefix: 'kw',   code: 'kw',  max: 8  },
+    { prefix: 'hf',   code: 'hf',  max: 4  },
+    { prefix: 'fin',  code: 'fin', max: 2  },
+  ].forEach(r => {
     const gekozen = Array.from(rondeSelectie[r.code]);
     for (let i = 1; i <= r.max; i++) {
       data[r.prefix + i] = gekozen[i - 1] || '';
     }
   });
-
-  // Winnaar
-  const winnaarGekozen = Array.from(rondeSelectie['winnaar']);
-  data['winnaar'] = winnaarGekozen[0] || '';
+  data['winnaar'] = Array.from(rondeSelectie['winnaar'])[0] || '';
 
   // Bonus
   bonusvragen.forEach((v, i) => {
@@ -1351,8 +1288,10 @@ async function verstuurVoorspelling() {
   });
 
   try {
+    // FIX: Content-Type header toegevoegd zodat Apps Script de JSON correct ontvangt
     const resp = await fetch(SCRIPT_URL, {
       method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
     });
     const result = await resp.json();
@@ -1364,12 +1303,10 @@ async function verstuurVoorspelling() {
         document.getElementById('klaar-email-adres').textContent = email;
         document.getElementById('klaar-email-melding').style.display = 'block';
       }
-      // Bouw samenvatting
       toonSamenvatting(data);
       naarStap(5);
       document.getElementById('stap-indicator').style.display = 'none';
     } else {
-      // FIX: toon foutmelding van het Apps Script (bijv. "naam bestaat al")
       toonAlert('alert-bonus', '⚠️ ' + (result.fout || 'Er ging iets mis. Probeer opnieuw.'), 'error');
       btn.disabled = false;
       btn.textContent = '✅ Inzenden!';
@@ -1381,19 +1318,13 @@ async function verstuurVoorspelling() {
   }
 }
 
-// ===================== SAMENVATTING BEDANKSCHERM =====================
+// ===================== SAMENVATTING =====================
 function toonSamenvatting(data) {
-
-  // ── Wedstrijden ──
   const wedstrijdenCard   = document.getElementById('klaar-wedstrijden-card');
   const wedstrijdenInhoud = document.getElementById('klaar-wedstrijden-inhoud');
-  const ingevuldeWedstrijden = wedstrijden.filter(w => {
-    const keuze = data['w' + (w.ID || w.id)] || '';
-    return keuze !== '';
-  });
+  const ingevuldeWedstrijden = wedstrijden.filter(w => (data['w' + (w.ID || w.id)] || '') !== '');
 
   if (ingevuldeWedstrijden.length > 0) {
-    // Groepeer per datum
     const perDatum = {};
     ingevuldeWedstrijden.forEach(w => {
       const datum = w.Datum || w.datum || 'Onbekend';
@@ -1409,13 +1340,11 @@ function toonSamenvatting(data) {
         const thuis = w.Thuis || w.thuis || '';
         const uit   = w.Uit   || w.uit   || '';
         const score = data['w' + id] || '';
-        const nlThuis = thuis === 'NEDERLAND';
-        const nlUit   = uit   === 'NEDERLAND';
         html += `
           <div class="wedstrijd-samenvatting">
-            <div class="ws-thuis ${nlThuis ? 'nl' : ''}" style="${nlThuis ? 'color:var(--goud)' : ''}">${thuis}</div>
+            <div class="ws-thuis" style="${thuis==='NEDERLAND'?'color:var(--goud)':''}">${thuis}</div>
             <div class="ws-score">${score}</div>
-            <div class="ws-uit ${nlUit ? 'nl' : ''}" style="${nlUit ? 'color:var(--goud)' : ''}">${uit}</div>
+            <div class="ws-uit" style="${uit==='NEDERLAND'?'color:var(--goud)':''}">${uit}</div>
           </div>`;
       });
     });
@@ -1423,17 +1352,15 @@ function toonSamenvatting(data) {
     wedstrijdenCard.style.display = 'block';
   }
 
-  // ── Rondes ──
   const rondesCard   = document.getElementById('klaar-rondes-card');
   const rondesInhoud = document.getElementById('klaar-rondes-inhoud');
-
   const rondeInfo = [
-    { code: 'r16',     label: '🔵 16e Finales',   stijl: '' },
-    { code: 'r8',      label: '🟡 8e Finales',     stijl: '' },
-    { code: 'kw',      label: '🟠 Kwartfinales',   stijl: '' },
-    { code: 'hf',      label: '🔴 Halve Finales',  stijl: '' },
-    { code: 'fin',     label: '⭐ Finale',          stijl: 'goud' },
-    { code: 'winnaar', label: '🥇 Winnaar',         stijl: 'winnaar' },
+    { code: 'r16',     label: '🔵 16e Finales',  stijl: '' },
+    { code: 'r8',      label: '🟡 8e Finales',    stijl: '' },
+    { code: 'kw',      label: '🟠 Kwartfinales',  stijl: '' },
+    { code: 'hf',      label: '🔴 Halve Finales', stijl: '' },
+    { code: 'fin',     label: '⭐ Finale',         stijl: 'goud' },
+    { code: 'winnaar', label: '🥇 Winnaar',        stijl: 'winnaar' },
   ];
 
   let rondeHtml = '';
@@ -1454,11 +1381,9 @@ function toonSamenvatting(data) {
     rondesCard.style.display = 'block';
   }
 
-  // ── Bonusvragen ──
   const bonusCard   = document.getElementById('klaar-bonus-card');
   const bonusInhoud = document.getElementById('klaar-bonus-inhoud');
   let bonusHtml = '';
-
   bonusvragen.forEach((v, i) => {
     const id      = v.ID || v.id || (i + 1);
     const vraag   = v.Vraag || v.vraag || ('Vraag ' + id);
@@ -1470,7 +1395,6 @@ function toonSamenvatting(data) {
         <div style="font-weight:600; color:var(--goud2); font-size:0.95rem;">${antwoord}</div>
       </div>`;
   });
-
   if (bonusHtml) {
     bonusInhoud.innerHTML = bonusHtml;
     bonusCard.style.display = 'block';
@@ -1495,17 +1419,7 @@ async function laadRanglijst() {
       return;
     }
 
-    let html = `
-      <table class="rang-table">
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Naam</th>
-            <th>Punten</th>
-          </tr>
-        </thead>
-        <tbody>`;
-
+    let html = `<table class="rang-table"><thead><tr><th>#</th><th>Naam</th><th>Punten</th></tr></thead><tbody>`;
     data.forEach((r, i) => {
       const klasse = i === 0 ? 'rang-1' : i === 1 ? 'rang-2' : i === 2 ? 'rang-3' : '';
       const medal  = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : '';
@@ -1519,10 +1433,8 @@ async function laadRanglijst() {
           </td>
         </tr>`;
     });
-
     html += '</tbody></table>';
     container.innerHTML = html;
-
   } catch (e) {
     container.innerHTML = '<div class="alert alert-error show">Fout bij laden ranglijst.</div>';
   }
@@ -1546,10 +1458,8 @@ function verbergAlert(id) {
 // ===================== INIT =====================
 updateStapIndicator(1);
 </script>
-</body>
-</html>
+
 <script>
-// Sticky offset na load
 function updateVoortgangBalk() {
   const balk   = document.getElementById('voortgang-fixed');
   if (!balk) return;
@@ -1557,7 +1467,6 @@ function updateVoortgangBalk() {
   const nav    = document.querySelector('.nav');
   const offset = (header ? header.offsetHeight : 0) + (nav ? nav.offsetHeight : 0);
   balk.style.top = offset + 'px';
-  // Alleen tonen op stap 2
   const stap2 = document.getElementById('stap2');
   if (stap2 && stap2.classList.contains('active')) {
     balk.classList.add('zichtbaar');
@@ -1568,3 +1477,5 @@ function updateVoortgangBalk() {
 window.addEventListener('load', updateVoortgangBalk);
 window.addEventListener('resize', updateVoortgangBalk);
 </script>
+</body>
+</html>
